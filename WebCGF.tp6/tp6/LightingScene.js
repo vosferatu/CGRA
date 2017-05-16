@@ -61,6 +61,8 @@ this.submarineAppearanceList={ 'boardAppearance':0, 'slidesAppearance':1, 'windo
 	
 	this.torpedo = new MyTorpedo(this);
 
+	this.trapeze = new MyTrapeze(this);
+
 	this.w=0;
 		
 
@@ -269,6 +271,11 @@ LightingScene.prototype.display = function() {
 
 	
 
+
+	this.pushMatrix();
+		this.slidesAppearance.apply();
+		this.trapeze.display();
+	this.popMatrix();
 
 
 	this.pushMatrix();

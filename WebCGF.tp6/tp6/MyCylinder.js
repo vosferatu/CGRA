@@ -53,16 +53,7 @@
 
 	for(i = 0; i < this.stacks; i++){
  		for(j = 0; j < this.slices; j++){
-
-			/*		3		2
-					*********
-					*     * *
-					*  *	*      0->1->2   
-					*********      2->3->0
-					0		1
-			*/
-
-						
+					
  			this.indices.push(j+(this.slices*i));
  			this.indices.push((j+1)+(this.slices*i)); 
  			this.indices.push(j+(this.slices*(i+1)));

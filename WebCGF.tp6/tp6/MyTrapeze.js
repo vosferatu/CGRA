@@ -103,13 +103,39 @@ MyTrapeze.prototype.initBuffers = function () {
 		1, 0, 1
    	];  
 
-   /*	this.texCoords = [
-   		this.maxS, this.maxT,
-		this.minS, this.maxT,
+	this.texCoords = [
+		
+		//QUADRADOS  done
+		this.minS, this.maxT, //0
+		this.maxS, this.maxT,
 		this.minS, this.minT,
 		this.maxS, this.minT,
+		this.maxS, this.maxT,
+		this.minS, this.maxT,
+		this.maxS, this.minT,
+		this.minS, this.minT,
 
-	];*/
+		//TRAPEZIOS
+		this.minS, this.maxT, //0
+		this.maxS, this.maxT,
+		this.minS, this.minT,
+		this.maxS, this.minT,
+		this.maxS, this.maxT,
+		this.maxS, this.minT,
+		this.minS, this.maxT,
+		this.minS, this.minT,
+
+		//BASE MAIOR MENOR
+		this.maxS, this.maxT, //0 <-
+		this.maxS, this.maxT, //1
+		this.minS, this.maxT, //2 <-
+		this.minS, this.maxT, //3
+		this.maxS, this.minT, //4 <-
+		this.maxS, this.minT, //5
+		this.minS, this.minT, //6 <-
+		this.minS, this.minT  //7
+
+	];
 		
 	this.primitiveType=this.scene.gl.TRIANGLES;
 	this.initGLBuffers();
