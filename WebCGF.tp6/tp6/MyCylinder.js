@@ -27,7 +27,13 @@
  MyCylinder.prototype.constructor = MyCylinder;
 
  MyCylinder.prototype.initBuffers = function() {
-
+ 	/*
+ 	* TODO:
+ 	* Replace the following lines in order to build a prism with a **single mesh**.
+ 	*
+ 	* How can the this.vertices, indices and normals arrays be defined to
+ 	* build a prism with varying number of slices and stacks?
+ 	*/
  	this.angulo = (2*Math.PI)/this.slices;
  	this.height = 1/this.stacks;
 
@@ -53,16 +59,26 @@
 
 	for(i = 0; i < this.stacks; i++){
  		for(j = 0; j < this.slices; j++){
-					
+
+			/*		3		2
+					*********
+					*     * *
+					*  *	*      0->1->2   
+					*********      2->3->0
+					0		1
+			*/
+
+						
  			this.indices.push(j+(this.slices*i));
  			this.indices.push((j+1)+(this.slices*i)); 
  			this.indices.push(j+(this.slices*(i+1)));
 
+ 			
  			if (j != (this.slices - 1)){
 				this.indices.push((j+1)+(this.slices*(i+1)));
  				this.indices.push(j+(this.slices*(i+1))); 
  				this.indices.push((j+1)+(this.slices*i)); 
- 			} else { 
+ 		} else { 
  	 			this.indices.push(this.slices*i);
  				this.indices.push((j+1)+(i*this.slices)); 
  				this.indices.push(j+(this.slices*i)); 						

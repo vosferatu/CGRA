@@ -7,6 +7,9 @@ function MySubmarine(scene) {
 
 	CGFobject.call(this,scene);
 
+	this.tri=new MyTriangle(this.scene);
+	
+
 	this.body = new MyCylinder(this.scene, 12, 32);
 	this.front = new MyLamp(this.scene, 12, 32);
 	this.back = new MyLamp(this.scene, 12, 32);
@@ -27,15 +30,32 @@ function MySubmarine(scene) {
 	this.traphor = new MyTrapeze(this.scene);
 	this.trapmid = new MyTrapeze(this.scene);
 
+	this.tri.initBuffers();
+
 	this.deg2rad=Math.PI/180.0;
 
 	this.x = 0;
 	this.y = 0;
 	this.z = 0;
 
+	d = new Date();
+	this.startTime = d.getTime();
+
+	this.currTime=0;
+
 	this.ang=0;
 
-	this.initBuffers();
+	this.speed=0;
+
+	this.predicate = 'z';
+
+
+	this.peri_y = 1.5;
+	this.helix_ang = 0;
+	this.leme_ang_vertical = 0;
+	this.leme_ang_horizontal = 0;
+
+
 };
 
 MySubmarine.prototype = Object.create(CGFobject.prototype);
@@ -79,9 +99,10 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 		this.tower.display();
 	this.scene.popMatrix();
 
+
 	//vertical periscope1
 	this.scene.pushMatrix();
-		this.scene.translate(0,1.5,2.7);
+		this.scene.translate(0,this.peri_y,2.7);
 		this.scene.scale(0.03,1,0.03);
 		this.scene.rotate(Math.PI/2, 1,0,0);
 		this.periscope1.display();
@@ -89,7 +110,7 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 
 	//horizontal periscope2
 	this.scene.pushMatrix();
-		this.scene.translate(0,1.5,2.67);
+		this.scene.translate(0,this.peri_y,2.67);
 		this.scene.scale(0.03,0.03,0.15);
 		this.periscope2.display();
 	this.scene.popMatrix();
@@ -111,6 +132,7 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 	//helix 1
 	this.scene.pushMatrix();
 		this.scene.translate(0.52,-0.25,0.1);
+		this.scene.rotate(this.helix_ang*this.deg2rad,0,0,1);
 		this.scene.scale(0.06,0.35,0.06);
 		this.helix1.display();
 	this.scene.popMatrix();
@@ -118,6 +140,7 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 	//helix 2
 	this.scene.pushMatrix();
 		this.scene.translate(-0.52,-0.25,0.1);
+		this.scene.rotate(-this.helix_ang*this.deg2rad,0,0,1);
 		this.scene.scale(0.06,0.35,0.06);
 		this.helix2.display();
 	this.scene.popMatrix();
@@ -138,7 +161,11 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 		this.helixcenter2.display();
 	this.scene.popMatrix();
 		
+
 	//vertical back trapeze
+	this.scene.pushMatrix();
+		this.scene.rotate(this.leme_ang_vertical*this.deg2rad,0,1,0);
+
 	this.scene.pushMatrix();
 		this.scene.translate(0,0.02,-0.1);
 		this.scene.scale(0.08,2.34,0.23);
@@ -146,11 +173,19 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 		this.trapvert.display();
 	this.scene.popMatrix();
 
+	this.scene.popMatrix();
+
+
 	//horizontal back trapeze
+	this.scene.pushMatrix();
+		this.scene.rotate(this.leme_ang_horizontal*this.deg2rad,1,0,0);
+
 	this.scene.pushMatrix();
 		this.scene.translate(0,0.02,-0.1);
 		this.scene.scale(2.34,0.08,0.23);
 		this.traphor.display();
+	this.scene.popMatrix();
+
 	this.scene.popMatrix();
 
 	//mid trapeze
@@ -163,29 +198,91 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 
 
 	this.scene.popMatrix();
+
+	//TRIANGLE
+	/*this.scene.pushMatrix();
+
+	this.scene.translate(this.x,this.y,this.z);
+	this.scene.rotate(this.ang*this.deg2rad,0,1,0); 
+
+	this.tri.display();			
+	this.scene.popMatrix();*/
 	
 };
 
-MySubmarine.prototype.update = function (predicate) {
+
+MySubmarine.prototype.changePredicate = function (x){
+
+this.predicate = x;
+
+}
 
 
-if(predicate==0){
-	this.z = this.z + 0.1*Math.cos(this.ang*this.deg2rad);
-	this.x = this.x + 0.1*Math.sin(this.ang*this.deg2rad);
+MySubmarine.prototype.update = function (currTime) {
+
+
+if(this.predicate=='w'){
+	this.speed = this.speed + 0.1;
+	
 }
 	else
-	if(predicate==1){
-	this.z = this.z - 0.1*Math.cos(this.ang*this.deg2rad);
-	this.x = this.x - 0.1*Math.sin(this.ang*this.deg2rad);
+	if(this.predicate=='s'){
+		this.speed = this.speed - 0.1;
+	
 	}
 	else
-	if(predicate==2)
-	this.ang=this.ang+1;
+	if(this.predicate=='a'){
+	this.ang=this.ang + (this.speed*currTime)/1000;
+	if(this.speed!=0)
+	this.leme_ang_vertical = -45;
+	}
+	
+	
 	
 else
-if(predicate==3)
-	this.ang=this.ang-1;
+if(this.predicate=='d'){
+	this.ang=this.ang - (this.speed*currTime)/1000;
+	if(this.speed!=0)
+	this.leme_ang_vertical = 45;
+}
+
+else
+if(this.predicate=='q'){
+	this.y = this.y + 0.1;
+	this.leme_ang_horizontal = -45;
+}
+
+else
+if(this.predicate=='e'){
+	this.y = this.y - 0.1;
+	this.leme_ang_horizontal = 45;
+}
+	else
+if(this.predicate=='p'){
+	if(this.peri_y<2)   //2 is max value 
+		this.peri_y = this.peri_y + 0.1;
+}
+
+else
+if(this.predicate=='l'){
+	if(this.peri_y>1.10)   //1.10 is min value 
+		this.peri_y = this.peri_y - 0.1;
+	
+}
+
+this.z = this.z + (this.speed*currTime)/1000*Math.cos(this.ang*this.deg2rad);
+this.x = this.x + (this.speed*currTime)/1000*Math.sin(this.ang*this.deg2rad);
+
+if(currTime>=1000)
+this.helix_ang = this.helix_ang + 60 * this.speed;  //????
 
 
+if(this.predicate!='a' && this.predicate!='d')
+this.leme_ang_vertical=0;
+
+if(this.predicate!='q' && this.predicate!='e')
+this.leme_ang_horizontal=0;
+
+this.predicate='z';
 }
 
