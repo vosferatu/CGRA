@@ -76,17 +76,17 @@ MyInterface.prototype.processKeyboard = function(event) {
 	// for better cross-browser support, you may also check suggestions on using event.which in http://www.w3schools.com/jsref/event_key_keycode.asp
 	
 		
-		if (event.keyCode==97)	// only works for 'a', as it is
+		if (event.keyCode==97 || event.keyCode == 65)
 			this.scene.submarineMovement(2);
 
-		else if (event.keyCode==100) // only works for 'd', as it is
+		else if (event.keyCode==100  || event.keyCode == 68)
 			this.scene.submarineMovement(3);
 			
 		
-		else if (event.keyCode==119)	// only works for 'w', as it is
+		else if (event.keyCode==119 || event.keyCode == 87)
 			this.scene.submarineMovement(0);
 
-		else if (event.keyCode==115)	// only works for 's', as it is
+		else if (event.keyCode==115  || event.keyCode == 83)
 			this.scene.submarineMovement(1);
 	
 };
