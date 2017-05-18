@@ -70,11 +70,12 @@
 
 						
  			this.indices.push(j+(this.slices*i));
- 			this.indices.push((j+1)+(this.slices*i)); 
+ 			this.indices.push((j+1)+(this.slices*i));
  			this.indices.push(j+(this.slices*(i+1)));
 
+ 		 			
  			
- 			if (j != (this.slices - 1)){
+ 			if (j != (this.slices -1)){
 				this.indices.push((j+1)+(this.slices*(i+1)));
  				this.indices.push(j+(this.slices*(i+1))); 
  				this.indices.push((j+1)+(this.slices*i)); 
@@ -98,6 +99,7 @@
 			this.texCoords.push(teta,  this.z);
 			teta += ang;
  		}
+ 		
  		teta = 0.0;
  		this.z += this.height;
 	}

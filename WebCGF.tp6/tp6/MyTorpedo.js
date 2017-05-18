@@ -3,7 +3,7 @@
  * @param gl {WebGLRenderingContext}
  * @constructor
  */
-function MyTorpedo(scene) {
+function MyTorpedo(scene,x,y,z) {
 
 	CGFobject.call(this,scene);
 
@@ -16,14 +16,37 @@ function MyTorpedo(scene) {
 
 	this.initBuffers();
 
+
+	this.x=x;
+	this.y=y;
+	this.z=z;
+
+	this.ang;
+
+	this.target;
+
+
+
 };
 
 MyTorpedo.prototype = Object.create(CGFobject.prototype);
 
 MyTorpedo.prototype.constructor=MyTorpedo;
 
+
+MyTorpedo.prototype.lock_target = function(target){
+
+this.target = target;
+
+}
+
+
 MyTorpedo.prototype.display = function () {
 	
+this.scene.pushMatrix();
+this.scene.translate(this.x,this.y,this.z);
+
+
 	//main cylinder
 	this.scene.pushMatrix();
 		this.scene.scale(0.15,0.15,0.8);
@@ -59,6 +82,9 @@ MyTorpedo.prototype.display = function () {
 		this.scene.scale(0.96,0.02,0.07);
 		this.trapdown.display();
 	this.scene.popMatrix();
+
+	
+this.scene.popMatrix();
 	
 };
 

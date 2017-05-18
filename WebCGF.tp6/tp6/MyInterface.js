@@ -100,4 +100,7 @@ MyInterface.prototype.processKeyboard = function(event) {
 		else if (event.keyCode==108)	// only works for 'l', as it is
 			this.scene.submarine.changePredicate('l');
 
+			else if (event.keyCode==102)	// only works for 'f', as it is
+			this.scene.submarine.changePredicate('f');
+
 };

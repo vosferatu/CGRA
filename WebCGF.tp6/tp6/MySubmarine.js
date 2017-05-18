@@ -3,7 +3,7 @@
  * @param gl {WebGLRenderingContext}
  * @constructor
  */
-function MySubmarine(scene) {
+function MySubmarine(scene,targets) {
 
 	CGFobject.call(this,scene);
 
@@ -55,7 +55,19 @@ function MySubmarine(scene) {
 	this.leme_ang_vertical = 0;
 	this.leme_ang_horizontal = 0;
 
+	this.torpedo = new MyTorpedo(this.scene,-7.5,-2,-6);
+	
+	this.showTorpedo = 0;
 
+	this.targets=targets;
+
+
+	this.torpedoAppearance = new CGFappearance(this);
+	this.torpedoAppearance.setAmbient(0.5,0.5,0.5,1);
+	this.torpedoAppearance.setDiffuse(0.72,0.72,0.72,1);
+	this.torpedoAppearance.setSpecular(0.1,0.1,0.1,1);
+	this.torpedoAppearance.setShininess(20);
+	this.torpedoAppearance.loadTexture("../resources/images/torpedo.png");
 };
 
 MySubmarine.prototype = Object.create(CGFobject.prototype);
@@ -197,7 +209,19 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 	this.scene.popMatrix();
 
 
+// Torpedo
+	if(this.showTorpedo==1){
+	this.scene.pushMatrix();
+	this.scene.translate(7.5, 1, 8);
+	//this.torpedoAppearance.apply();
+		this.torpedo.display();
 	this.scene.popMatrix();
+	}
+
+	this.scene.popMatrix();
+
+
+
 
 	//TRIANGLE
 	/*this.scene.pushMatrix();
@@ -220,19 +244,23 @@ this.predicate = x;
 
 MySubmarine.prototype.update = function (currTime) {
 
+var elapsed = currTime-this.startTime;
+
+this.startTime = currTime;
 
 if(this.predicate=='w'){
-	this.speed = this.speed + 0.1;
+	this.speed = this.speed + 0.5;
+	
 	
 }
 	else
 	if(this.predicate=='s'){
-		this.speed = this.speed - 0.1;
+		this.speed = this.speed - 0.5;
 	
 	}
 	else
 	if(this.predicate=='a'){
-	this.ang=this.ang + (this.speed*currTime)/1000;
+	this.ang=this.ang + (this.speed*elapsed)/1000;
 	if(this.speed!=0)
 	this.leme_ang_vertical = -45;
 	}
@@ -241,7 +269,7 @@ if(this.predicate=='w'){
 	
 else
 if(this.predicate=='d'){
-	this.ang=this.ang - (this.speed*currTime)/1000;
+	this.ang=this.ang - (this.speed*elapsed)/1000;
 	if(this.speed!=0)
 	this.leme_ang_vertical = 45;
 }
@@ -270,12 +298,31 @@ if(this.predicate=='l'){
 	
 }
 
-this.z = this.z + (this.speed*currTime)/1000*Math.cos(this.ang*this.deg2rad);
-this.x = this.x + (this.speed*currTime)/1000*Math.sin(this.ang*this.deg2rad);
+else
+if(this.predicate=='f'){
+	this.showTorpedo=1;
+	for(i = 0; i < this.targets.length; i++){
+		if(this.targets[i].destroyed==0){
+			this.torpedo.lock_target(this.targets[i]);		
+			break;
+	}
+	}
+	
+}
 
-if(currTime>=1000)
-this.helix_ang = this.helix_ang + 60 * this.speed;  //????
 
+		
+this.z = this.z +  (this.speed*elapsed)/1000*Math.cos(this.ang*this.deg2rad);
+this.x = this.x + (this.speed*elapsed)/1000*Math.sin(this.ang*this.deg2rad);
+
+
+
+//if(elapsed>=1000)
+this.helix_ang = (this.helix_ang + 60* this.speed)%360;  //????  Corrigir isto, os angulos sao mts e nao se mantem mesmo
+
+
+console.log("Angle: ", this.helix_ang);
+console.log("Speed: ", this.speed);
 
 if(this.predicate!='a' && this.predicate!='d')
 this.leme_ang_vertical=0;
