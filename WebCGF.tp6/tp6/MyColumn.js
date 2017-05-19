@@ -8,7 +8,7 @@ function MyColumn(scene) {
 
 	this.cube=new MyUnitCubeQuad(this.scene);
 
-	this.cylinder = new MyCylinder(this.scene,20, 4);
+	this.cylinder = new MyCylinder(this.scene,700, 4);
 
 	this.columnAppearance = new CGFappearance(this.scene);
 	this.columnAppearance.setAmbient(0.5,0.5,0.5,1);

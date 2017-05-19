@@ -25,7 +25,12 @@ function MyTorpedo(scene,x,y,z) {
 
 	this.target;
 
-
+this.torpedoAppearance = new CGFappearance(this.scene);
+	this.torpedoAppearance.setAmbient(0.5,0.5,0.5,1);
+	this.torpedoAppearance.setDiffuse(0.72,0.72,0.72,1);
+	this.torpedoAppearance.setSpecular(0.1,0.1,0.1,1);
+	this.torpedoAppearance.setShininess(20);
+	this.torpedoAppearance.loadTexture("../resources/images/torpedo.png");
 
 };
 
@@ -50,6 +55,7 @@ this.scene.translate(this.x,this.y,this.z);
 	//main cylinder
 	this.scene.pushMatrix();
 		this.scene.scale(0.15,0.15,0.8);
+		this.torpedoAppearance.apply();
 		this.body.display();
 	this.scene.popMatrix();
 

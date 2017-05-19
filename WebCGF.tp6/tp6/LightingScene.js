@@ -147,7 +147,7 @@ this.submarineAppearances = [
         ];
 
 
-	this.setUpdatePeriod(100);
+	this.setUpdatePeriod(25);
 	
 };
 
