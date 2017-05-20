@@ -38,8 +38,6 @@ function MySubmarine(scene,targets) {
 	this.y = 0;
 	this.z = 0;
 
-	
-	this.startTime = -1;
 
 	this.currTime=0;
 
@@ -210,8 +208,7 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 	if(this.showTorpedo==1){
 	this.scene.pushMatrix();
 	this.scene.translate(7.5, 1, 8);
-	//this.torpedoAppearance.apply();
-		this.torpedo.display();
+	this.torpedo.display();
 	this.scene.popMatrix();
 	}
 
@@ -314,7 +311,7 @@ if(this.predicate=='f'){
 
 		
 this.z = this.z +  (this.speed*elapsed)*Math.cos(this.ang*this.deg2rad);
-//this.x = this.x + (this.speed*elapsed)*Math.sin(this.ang*this.deg2rad);
+this.x = this.x + (this.speed*elapsed)*Math.sin(this.ang*this.deg2rad);
 
 
 
