@@ -3,82 +3,76 @@
  * @constructor
  */
 
- 
- function MyLamp(scene, slices, stacks) {
- 	CGFobject.call(this,scene);
 
+function MyLamp(scene, slices, stacks, minS, maxS, minT, maxT){
+	CGFobject.call(this, scene);
+	
 	if(slices == null)
 		slices = 8;
 	
 	if(stacks == null)
 		stacks = 20;
-	
-	this.stacks = stacks;
+
 	this.slices = slices;
+	this.stacks = stacks;
 
- 	this.initBuffers();
- };
+	this.minS = minS || 0.0;
+	this.maxS = maxS || 1.0;
+	this.minT = minT || 0.0;
+	this.maxT = maxT || 1.0;
 
- MyLamp.prototype = Object.create(CGFobject.prototype);
- MyLamp.prototype.constructor = MyLamp;
+	this.incS = (this.maxS - this.minS) / this.slices;
+	this.incT = (this.maxT - this.minT) / this.stacks;
 
- MyLamp.prototype.initBuffers = function() {
+	this.initBuffers();
+};
 
+MyLamp.prototype = Object.create(CGFobject.prototype);
+MyLamp.prototype.constructor = MyLamp;
+
+MyLamp.prototype.initBuffers = function(){
+	
 	this.vertices = new Array();
 	this.indices = new Array();
 	this.normals = new Array();
 	this.texCoords = new Array();
 
-
-	this.height = 1/this.stacks;
 	this.ang = (2*Math.PI)/this.slices;
+	this.z = Math.PI / (2 * this.stacks);
 
-	for (i = 0; i <= 1; i += this.height) {
-		for (j = 0; j < this.slices; j++) {
-			//spherical coordinates
-			this.vertices.push(Math.sqrt(1-(i*i))*Math.cos(j*this.ang));
-			this.vertices.push(Math.sqrt(1-(i*i))*Math.sin(j*this.ang));
-			this.vertices.push(i);
+	var beta = 0;
+	var xText = this.maxS;
 
-			this.normals.push(Math.sqrt(1-(i*i))*Math.cos(j*this.ang));
-			this.normals.push(Math.sqrt(1-(i*i))*Math.sin(j*this.ang));
-			this.normals.push(i);
+	for (var i = 0; i <= this.slices; i++, beta += this.ang, xText -= this.incS){
+		var teta = 0;
+		var yText = this.minT;
+
+		for (var j = 0; j <= this.stacks; j++, teta += this.z, yText += this.incT){
+			var x = Math.cos(beta) * Math.sin(teta);
+			var y = Math.sin(beta) * Math.sin(teta);
+			var z = Math.cos(teta);
+
+			this.vertices.push(x, y, z);
+			this.normals.push(x, y, z);
+			this.texCoords.push(xText, yText);
 		}
 	}
 
-	for (i = 0; i < this.stacks; i++) {
-		for (j = 0; j < this.slices; j++) {
+	var ind = 1;
 
-			this.indices.push(this.slices*i+j);
-			this.indices.push(this.slices*i+(j+1));
-			this.indices.push(this.slices*(i+1)+j);
-			
-			if (j != (this.slices - 1)) {
-				this.indices.push(this.slices*(i+1)+(j+1));
-				this.indices.push(this.slices*(i+1)+j);
-				this.indices.push(this.slices*i+(j+1));
-			}
-			else {
-				this.indices.push(this.slices*i);
-				this.indices.push(this.slices*i+(j+1));
-				this.indices.push(this.slices*i+j);
-			}
+	for (var i = 0; i < this.slices; i++){
+		for (var j = 0; j < this.stacks; j++){
+			this.indices.push(ind, ind+this.stacks, ind+this.stacks+1);
+			this.indices.push(ind+this.stacks, ind, ind-1);
+			this.indices.push(ind+this.stacks+1, ind+this.stacks, ind);
+			this.indices.push(ind, ind+this.stacks, ind-1);
+
+			ind++;
 		}
+
+		ind++;
 	}
 
-	var s = 0;
-	var t = 0;
-	var angulo = 1/this.slices;
-
-	for (i = 0; i <= this.stacks; i++, t += this.height) {
-		for (j = 0; j < this.slices; j++, s += angulo) {
-			this.texCoords.push(s, t);
-		}
-		s = 0;
-	}
-	
-
- 	this.primitiveType = this.scene.gl.TRIANGLES;
-
- 	this.initGLBuffers();
- };
+	this.primitiveType = this.scene.gl.TRIANGLES;
+	this.initGLBuffers();
+};

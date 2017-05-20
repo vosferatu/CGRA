@@ -3,106 +3,74 @@
  * @constructor
  */
 
- function MyCylinder(scene, slices, stacks, minS=0, maxS=1, minT=0, maxT=1) {
- 	CGFobject.call(this,scene);
-	
+function MyCylinder(scene, slices, stacks, minS, maxS, minT, maxT){
+	CGFobject.call(this, scene);
+
 	if(slices == null)
 		slices = 8;
 	
 	if(stacks == null)
 		stacks = 20;
-	
-	this.stacks = stacks;
+
 	this.slices = slices;
+	this.stacks = stacks;
 
-	this.minS = minS;
-	this.maxS = maxS;
-	this.minT = minT;
-	this.maxT = maxT;
+	this.minS = minS || 0.0;
+	this.maxS = maxS || 1.0;
+	this.minT = minT || 0.0;
+	this.maxT = maxT || 1.0;
 
- 	this.initBuffers();
- };
+	this.incS = (this.maxS - this.minS) / this.slices;
+	this.incT = (this.maxT - this.minT) / this.stacks;
 
- MyCylinder.prototype = Object.create(CGFobject.prototype);
- MyCylinder.prototype.constructor = MyCylinder;
+	this.initBuffers();
+};
 
- MyCylinder.prototype.initBuffers = function() {
- 	/*
- 	* TODO:
- 	* Replace the following lines in order to build a prism with a **single mesh**.
- 	*
- 	* How can the this.vertices, indices and normals arrays be defined to
- 	* build a prism with varying number of slices and stacks?
- 	*/
- 	this.angulo = (2*Math.PI)/this.slices;
- 	this.height = 1/this.stacks;
+MyCylinder.prototype = Object.create(CGFobject.prototype);
+MyCylinder.prototype.constructor = MyCylinder;
 
+MyCylinder.prototype.initBuffers = function(){
 	this.vertices = new Array();
-	this.indices = new Array();
 	this.normals = new Array();
+	this.indices = new Array();
 	this.texCoords = new Array();
 
-	var teta = 0.0;
-	this.z = 0;
+	var height = 1.0 / this.stacks;
+	var ang = (2 * Math.PI) / this.slices;
 
-	for(j= 0; j < (this.stacks + 1); j++,this.z += this.height){
- 		teta = 0;
- 		for(i = 0; i < this.slices; i++){
- 			this.vertices.push(Math.cos(teta)); this.vertices.push(Math.sin(teta)); this.vertices.push(this.z);
+	var teta = 0;
+	var xText = this.maxS;
 
-			this.normals.push(Math.cos(teta)); this.normals.push(Math.sin(teta)); this.normals.push(0);
-			teta+=this.angulo;
- 		}
+	for (i = 0; i <= this.slices; i++, teta += ang, xText -= this.incS){
 
+		var yText = this.maxT;
+		var x = Math.cos(teta);
+		var y = Math.sin(teta);
+		var z = 0;
+
+		for (j = 0; j <= this.stacks; j++, z += height, yText -= this.incT){
+
+			this.vertices.push(x, y, z);
+			this.normals.push(x, y, 0);
+			this.texCoords.push(xText, yText);
+		}
 	}
 
+	var ind = 1;
 
-	for(i = 0; i < this.stacks; i++){
- 		for(j = 0; j < this.slices; j++){
+	for (var i = 0; i < this.slices; i++){
+		for (var j = 0; j < this.stacks; j++){
+			this.indices.push(ind, ind+this.stacks, ind+this.stacks+1);
+			this.indices.push(ind+this.stacks, ind, ind-1);
+			this.indices.push(ind+this.stacks+1, ind+this.stacks, ind);
+			this.indices.push(ind, ind+this.stacks, ind-1);
 
-			/*		3		2
-					*********
-					*     * *
-					*  *	*      0->1->2   
-					*********      2->3->0
-					0		1
-			*/
+			ind++;
+		}
 
-						
- 			this.indices.push(j+(this.slices*i));
- 			this.indices.push((j+1)+(this.slices*i)); 
- 			this.indices.push(j+(this.slices*(i+1)));
-
- 			
- 			if (j != (this.slices - 1)){
-				this.indices.push((j+1)+(this.slices*(i+1)));
- 				this.indices.push(j+(this.slices*(i+1))); 
- 				this.indices.push((j+1)+(this.slices*i)); 
- 		} else { 
- 	 			this.indices.push(this.slices*i);
- 				this.indices.push((j+1)+(i*this.slices)); 
- 				this.indices.push(j+(this.slices*i)); 						
- 				
- 			}
- 		}
- 		
+		ind++;
 	}
 
-
-	teta = 0.0;
-	this.z= 0.0;
-	var ang = 1/this.slices;
-
-	for(i = 0; i <= this.stacks; i++){
- 		for(j = 0; j < this.slices; j++){
-			this.texCoords.push(teta,  this.z);
-			teta += ang;
- 		}
- 		teta = 0.0;
- 		this.z += this.height;
-	}
-
- 	this.primitiveType = this.scene.gl.TRIANGLES;
- 	this.initGLBuffers();
-
- };
+	this.primitiveType = this.scene.gl.TRIANGLES;
+	this.initGLBuffers();
+};
