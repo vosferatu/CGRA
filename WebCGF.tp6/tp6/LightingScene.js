@@ -76,7 +76,7 @@ this.submarineAppearances = [
         ];
 
 
-	this.submarine= new MySubmarine(this, this.target);
+	this.submarine= new MySubmarine(this,this.target);
 	
 
 	this.w=0;

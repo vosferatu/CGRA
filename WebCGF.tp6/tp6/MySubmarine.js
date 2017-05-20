@@ -55,13 +55,15 @@ function MySubmarine(scene,targets) {
 
 	
 
-	this.torpedo = new MyTorpedo(this.scene,-7.5,-2,-6);
+	//this.torpedo = new MyTorpedo(this.scene,-7.5,-2,-6);
 	
-	this.showTorpedo = 0;
+	this.torpedos = new Array();
+
+	//this.showTorpedo = 0;
 
 	this.targets=targets;
 
-d = new Date();
+	d = new Date();
 	this.startTime = d.getTime();
 	
 };
@@ -205,15 +207,24 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 	this.scene.popMatrix();
 
 // Torpedo
-	if(this.showTorpedo==1){
+	/*if(this.showTorpedo==1){
 	this.scene.pushMatrix();
 	this.scene.translate(7.5, 1, 8);
 	this.torpedo.display();
 	this.scene.popMatrix();
-	}
+	}*/
 
+	
 
 	this.scene.popMatrix();
+
+	for(i=0; i<this.torpedos.length; i++){
+this.scene.pushMatrix();
+this.scene.translate(7.5, 1, 8);
+	this.torpedos[i].display();
+	this.torpedos[i].update();
+	this.scene.popMatrix();	
+}
 
 
 	//TRIANGLE
@@ -224,7 +235,7 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 
 	this.tri.display();			
 	this.scene.popMatrix();*/
-	
+
 };
 
 
@@ -298,6 +309,22 @@ if(this.predicate=='l'){
 
 else
 if(this.predicate=='f'){
+
+var torp = new MyTorpedo(this.scene,-7.5,-2,-6,this.ang)
+
+for(i = 0; i < this.targets.length; i++){
+		if(this.targets[i].destroyed==0){
+			torp.lock_target(this.targets[i]);		
+			break;
+	}
+}
+
+
+this.torpedos.push(torp);
+
+}
+
+/*if(this.predicate=='f'){
 	this.showTorpedo=1;
 	for(i = 0; i < this.targets.length; i++){
 		if(this.targets[i].destroyed==0){
@@ -306,7 +333,7 @@ if(this.predicate=='f'){
 	}
 	}
 	
-}
+}*/
 
 
 		

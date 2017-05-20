@@ -30,6 +30,8 @@ MyTarget.prototype.destroy = function () {
 };
 
 
+
+
 MyTarget.prototype = Object.create(CGFobject.prototype);
 MyTarget.prototype.constructor=MyTarget;
 

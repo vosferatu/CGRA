@@ -3,7 +3,7 @@
  * @param gl {WebGLRenderingContext}
  * @constructor
  */
-function MyTorpedo(scene,x,y,z) {
+function MyTorpedo(scene,x,y,z,ang) {
 
 	CGFobject.call(this,scene);
 
@@ -21,9 +21,15 @@ function MyTorpedo(scene,x,y,z) {
 	this.y=y;
 	this.z=z;
 
-	this.ang;
+	this.ang=ang;
 
 	this.target;
+
+
+	this.P1x =x; this.P1y =y; this.P1z=z;
+	this.P2x=x*Math.sin(this.ang*this.deg2rad); this.P2y=y; this.P2z=z*Math.cos(this.ang*this.deg2rad);
+	this.P3x; this.P3y; this.P3z;
+	this.P4x; this.P4y; this.P4z;
 
 this.torpedoAppearance = new CGFappearance(this.scene);
 	this.torpedoAppearance.setAmbient(0.5,0.5,0.5,1);
@@ -42,6 +48,10 @@ MyTorpedo.prototype.constructor=MyTorpedo;
 MyTorpedo.prototype.lock_target = function(target){
 
 this.target = target;
+
+this.P3x = this.target.x; this.P3y=3+ this.target.y; this.P3z=this.target.z;
+
+this.P4x= this.target.x; this.P4y= this.target.y; this.P4z= this.target.z;
 
 }
 
@@ -94,7 +104,17 @@ this.scene.popMatrix();
 	
 };
 
-MyTorpedo.prototype.update = function (predicate) {
+MyTorpedo.prototype.update = function () {
 
+
+var dist = Math.sqrt(Math.pow((this.target.x-this.x),2) + Math.pow((this.target.y-this.y),2) +Math.pow((this.target.z-this.z),2));
+var t=dist;
+
+
+this.x = Math.pow((1-t),3)* this.P1x+3*t*Math.pow((1-t),2)*this.P2x+3*Math.pow(t,2)*(1-t)*this.P3x+Math.pow(t,3)*this.P4x;
+
+this.y = Math.pow((1-t),3)* this.P1y+3*t*Math.pow((1-t),2)*this.P2y+3*Math.pow(t,2)*(1-t)*this.P3y+Math.pow(t,3)*this.P4y;
+
+this.z = Math.pow((1-t),3)* this.P1z+3*t*Math.pow((1-t),2)*this.P2z+3*Math.pow(t,2)*(1-t)*this.P3z+Math.pow(t,3)*this.P4z;
 }
 
