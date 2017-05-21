@@ -215,9 +215,7 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 
 	for(i=0; i<this.torpedos.length; i++){
 		this.scene.pushMatrix();
-			this.scene.translate(7.5, 1, 8);
 			this.torpedos[i].display();
-			this.torpedos[i].update();
 		this.scene.popMatrix();	
 	}
 
@@ -299,6 +297,7 @@ if(this.predicate=='f'){
 		if(this.targets[i].destroyed==0){
 			var torp = new MyTorpedo(this.scene, this, this.targets[i]);
 			this.torpedos.push(torp);
+			//this.targets.splice(i, 1);
 			break;
 		}
 	}
@@ -307,8 +306,7 @@ if(this.predicate=='f'){
 
 	for(i = 0; i < this.torpedos.length; i++){
 		if(this.torpedos[i].t >= 1){
-			this.scene.target.splice(this.scene.target.indexOf(this.torpedo[i].target), 1);
-			this.targets.splice(this.targets.indexOf(this.torpedo[i].target), 1);
+			this.torpedos[i].target = null;			
 			this.torpedos.splice(i,1);
 			i--;
 		}

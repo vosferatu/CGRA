@@ -15,12 +15,12 @@ function MyTorpedo(scene, submarine, target) {
 	
 	this.sub_x= submarine.x;
 	this.sub_y= submarine.y-1;
-	this.sub_z= submarine.z;
-	this.sub_ang= submarine.ang;
+	this.sub_z= submarine.z+2;
+	this.sub_ang= submarine.ang -180;
 
 	this.x= submarine.x;
 	this.y= submarine.y-1;
-	this.z= submarine.z;
+	this.z= submarine.z+2;
 
 	this.ang = 0;
 	this.rotation = 0;
@@ -124,6 +124,7 @@ MyTorpedo.prototype.update = function(){
 	this.rotation = delta_x / Math.abs(delta_x) * Math.acos(delta_z / Math.sqrt(Math.pow(delta_x, 2) + Math.pow(delta_z, 2)));
 	this.ang = Math.asin(-delta_y / Math.sqrt(Math.pow(delta_x, 2) + Math.pow(delta_y, 2) + Math.pow(delta_z, 2)));
 
-	if (this.t >= 1)
+	if (this.t >= 1){
 		this.elapsed = 0;
+	}
 };

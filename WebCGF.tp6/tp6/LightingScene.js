@@ -323,30 +323,6 @@ this.translate(0,0,0.31);
 		this.submarine.display();
 	this.popMatrix();
 
-/*
-	// Plane Wall
-	this.pushMatrix();
-		this.translate(7.5, 4, 0);
-		this.scale(15, 8, 0.2);
-		this.materialD.apply();
-		this.wall.display();
-	this.popMatrix();
-
-		// Left Wall
-	this.pushMatrix();
-		this.translate(0, 4, 7.5);
-		this.rotate(90 * degToRad, 0, 1, 0);
-		this.scale(15, 8, 0.2);
-		this.windowAppearance.apply();
-		this.wall.display();
-	this.popMatrix();
-
-
-
-*/
-
-
-
 	// ---- END Primitive drawing section
 };
 
