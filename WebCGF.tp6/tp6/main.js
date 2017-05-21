@@ -21,7 +21,6 @@ serialInclude([
 	'MyPaperPlane.js',
 	'MyInterface.js',
 	'MySubmarine.js',
-	'MyDoubleCylinder.js',
 	'MyTopCylinder.js',
 	'MyTopLamp.js',
 	'MyTrapeze.js',
