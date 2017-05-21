@@ -114,9 +114,9 @@ this.submarineAppearances = [
 
 	this.floorAppearance = new CGFappearance(this);
 	this.floorAppearance.setAmbient(1,1,1,1);
-	this.floorAppearance.setDiffuse(0.72,0.72,0.72,1);
-	this.floorAppearance.setSpecular(1,1,1,1);
-	this.floorAppearance.setShininess(100);
+ 	this.floorAppearance.setDiffuse(0.72,0.72,0.72,1);
+ 	this.floorAppearance.setSpecular(1,1,1,1);
+ 	this.floorAppearance.setShininess(100);
 	this.floorAppearance.loadTexture("../resources/images/oceano.png");
 	this.floorAppearance.setTextureWrap("CLAMP_TO_EDGE","CLAMP_TO_EDGE");
 
@@ -292,7 +292,6 @@ this.pushMatrix();
 	this.popMatrix();	
 }
 
-
 	//clock
 	this.pushMatrix();
 	this.translate(8,5,-0.77);
@@ -305,8 +304,6 @@ this.pushMatrix();
 		this.scale(2,1.7,0.4);
 		this.column.display();
 	this.popMatrix();
-	
-
 
 	// Floor
 	this.pushMatrix();
@@ -324,9 +321,6 @@ this.pushMatrix();
 		this.submarineAppearances[this.currSubmarineAppearance].apply();
 		this.submarine.display();
 	this.popMatrix();
-
-
-
 
 	// ---- END Primitive drawing section
 };

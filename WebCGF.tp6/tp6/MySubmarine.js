@@ -47,14 +47,8 @@ function MySubmarine(scene,targets) {
 	this.helix_ang = 0;
 	this.leme_ang_vertical = 0;
 	this.leme_ang_horizontal = 0;
-
-	
-
-	
 	
 	this.torpedos = new Array();
-
-	
 
 	this.targets=targets;
 
@@ -200,9 +194,7 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 		this.scene.rotate(Math.PI,0,1,0);
 		this.trapmid.display();
 	this.scene.popMatrix();
-
-
-
+	
 	this.scene.popMatrix();
 
 	for(i=0; i<this.torpedos.length; i++){
@@ -211,7 +203,6 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 			//this.torpedos[i].update();
 		this.scene.popMatrix();	
 	}
-
 
 };
 
@@ -224,7 +215,6 @@ MySubmarine.prototype.changePredicate = function (x){
 
 
 MySubmarine.prototype.update = function (currTime) {
-
 
 var elapsed = (currTime-this.startTime)/1000;
 
@@ -287,6 +277,7 @@ if(this.predicate=='f'){
 		if(this.targets[i].destroyed==0){
 			var torp = new MyTorpedo(this.scene, this, this.targets[i]);
 			this.torpedos.push(torp);
+			//this.targets.splice(i, 1);
 			break;
 		}
 	}
@@ -296,40 +287,35 @@ if(this.predicate=='f'){
 	for(i = 0; i < this.torpedos.length; i++){
 		if(this.torpedos[i].t >= 1){
 			var j=this.targets.indexOf(this.torpedos[i].target);
-			
-			this.scene.target.splice(j,1);
-			this.torpedos[i].target = null;
-			console.log("Torp_x: ",this.torpedos[i].x);	
-			console.log("Torp_y: ",this.torpedos[i].y);
-			console.log("Torp_z: ",this.torpedos[i].z);		
+ 			
+ 			this.scene.target.splice(j,1);
+ 			this.torpedos[i].target = null;
+ 			console.log("Torp_x: ",this.torpedos[i].x);	
+ 			console.log("Torp_y: ",this.torpedos[i].y);
+ 			console.log("Torp_z: ",this.torpedos[i].z);	
+ 		
 			this.torpedos.splice(i,1);
 			i--;
-
 		}
-		else
-			this.torpedos[i].update(elapsed);
+		else {
+			this.torpedos[i].update();
+		}
 	}
-
-
-
 		
-this.z = this.z +  (this.speed*elapsed)*Math.cos(this.ang*this.deg2rad);
-this.x = this.x + (this.speed*elapsed)*Math.sin(this.ang*this.deg2rad);
+	this.z = this.z +  (this.speed*elapsed)*Math.cos(this.ang*this.deg2rad);
+	this.x = this.x + (this.speed*elapsed)*Math.sin(this.ang*this.deg2rad);
 
 
 
-this.helix_ang += elapsed* this.speed * Math.PI * 2;
-
-
-
+	this.helix_ang += elapsed* this.speed * Math.PI * 2;
 
 
 if(this.predicate!='a' && this.predicate!='d')
-this.leme_ang_vertical=0;
+	this.leme_ang_vertical=0;
 
 if(this.predicate!='q' && this.predicate!='e')
-this.leme_ang_horizontal=0;
+	this.leme_ang_horizontal=0;
 
 this.predicate='z';
-}
 
+}
