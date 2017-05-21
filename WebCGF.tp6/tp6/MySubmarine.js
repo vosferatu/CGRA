@@ -3,9 +3,12 @@
  * @param gl {WebGLRenderingContext}
  * @constructor
  */
-function MySubmarine(scene) {
+function MySubmarine(scene,targets) {
 
 	CGFobject.call(this,scene);
+
+	this.tri=new MyTriangle(this.scene);
+	
 
 	this.body = new MyCylinder(this.scene, 12, 32);
 	this.front = new MyLamp(this.scene, 12, 32);
@@ -23,9 +26,11 @@ function MySubmarine(scene) {
 	this.helixcenter1 = new MyTopLamp(this.scene, 64, 32);
 	this.helixcenter2 = new MyTopLamp(this.scene, 64, 32);
 
-	this.trapvert = new MyTrapeze(this.scene);
-	this.traphor = new MyTrapeze(this.scene);
-	this.trapmid = new MyTrapeze(this.scene);
+	this.trapvert = new MyLeme(this.scene);
+	this.traphor = new MyLeme(this.scene);
+	this.trapmid = new MyLeme(this.scene);
+
+	this.tri.initBuffers();
 
 	this.deg2rad=Math.PI/180.0;
 
@@ -33,9 +38,34 @@ function MySubmarine(scene) {
 	this.y = 0;
 	this.z = 0;
 
+
+	this.currTime=0;
+
 	this.ang=0;
 
-	this.initBuffers();
+	this.speed=0;
+
+	this.predicate = 'z';
+
+
+	this.peri_y = 1.5;
+	this.helix_ang = 0;
+	this.leme_ang_vertical = 0;
+	this.leme_ang_horizontal = 0;
+
+	
+
+	//this.torpedo = new MyTorpedo(this.scene,-7.5,-2,-6);
+	
+	this.torpedos = new Array();
+
+	//this.showTorpedo = 0;
+
+	this.targets=targets;
+
+	d = new Date();
+	this.startTime = d.getTime();
+	
 };
 
 MySubmarine.prototype = Object.create(CGFobject.prototype);
@@ -79,9 +109,10 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 		this.tower.display();
 	this.scene.popMatrix();
 
+
 	//vertical periscope1
 	this.scene.pushMatrix();
-		this.scene.translate(0,1.5,2.7);
+		this.scene.translate(0,this.peri_y,2.7);
 		this.scene.scale(0.03,1,0.03);
 		this.scene.rotate(Math.PI/2, 1,0,0);
 		this.periscope1.display();
@@ -89,7 +120,7 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 
 	//horizontal periscope2
 	this.scene.pushMatrix();
-		this.scene.translate(0,1.5,2.67);
+		this.scene.translate(0,this.peri_y,2.67);
 		this.scene.scale(0.03,0.03,0.15);
 		this.periscope2.display();
 	this.scene.popMatrix();
@@ -111,6 +142,7 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 	//helix 1
 	this.scene.pushMatrix();
 		this.scene.translate(0.52,-0.25,0.1);
+		this.scene.rotate(this.helix_ang,0,0,1);
 		this.scene.scale(0.06,0.35,0.06);
 		this.helix1.display();
 	this.scene.popMatrix();
@@ -118,6 +150,7 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 	//helix 2
 	this.scene.pushMatrix();
 		this.scene.translate(-0.52,-0.25,0.1);
+		this.scene.rotate(-this.helix_ang,0,0,1);
 		this.scene.scale(0.06,0.35,0.06);
 		this.helix2.display();
 	this.scene.popMatrix();
@@ -138,54 +171,190 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 		this.helixcenter2.display();
 	this.scene.popMatrix();
 		
+
 	//vertical back trapeze
 	this.scene.pushMatrix();
+		this.scene.rotate(this.leme_ang_vertical*this.deg2rad,0,1,0);
+
+	this.scene.pushMatrix();
 		this.scene.translate(0,0.02,-0.1);
-		this.scene.scale(0.08,2.34,0.23);
+		this.scene.scale(0.08,1.5,0.23);
 		this.scene.rotate(Math.PI/2,0,0,1);
 		this.trapvert.display();
 	this.scene.popMatrix();
 
+	this.scene.popMatrix();
+
+
 	//horizontal back trapeze
 	this.scene.pushMatrix();
+		this.scene.rotate(this.leme_ang_horizontal*this.deg2rad,1,0,0);
+
+	this.scene.pushMatrix();
 		this.scene.translate(0,0.02,-0.1);
-		this.scene.scale(2.34,0.08,0.23);
+		this.scene.scale(1,0.08,0.23);
 		this.traphor.display();
+	this.scene.popMatrix();
+
 	this.scene.popMatrix();
 
 	//mid trapeze
 	this.scene.pushMatrix();
-		this.scene.translate(0,0.8,2.5);
-		this.scene.scale(1.42,0.04,0.23);
+		this.scene.translate(-0,9,11);
 		this.scene.rotate(Math.PI,0,1,0);
 		this.trapmid.display();
 	this.scene.popMatrix();
 
+// Torpedo
+	/*if(this.showTorpedo==1){
+	this.scene.pushMatrix();
+	this.scene.translate(7.5, 1, 8);
+	this.torpedo.display();
+	this.scene.popMatrix();
+	}*/
+
+	
 
 	this.scene.popMatrix();
-	
+
+	for(i=0; i<this.torpedos.length; i++){
+this.scene.pushMatrix();
+this.scene.translate(7.5, 1, 8);
+	this.torpedos[i].display();
+	this.torpedos[i].update();
+	this.scene.popMatrix();	
+}
+
+
+	//TRIANGLE
+	/*this.scene.pushMatrix();
+
+	this.scene.translate(this.x,this.y,this.z);
+	this.scene.rotate(this.ang*this.deg2rad,0,1,0); 
+
+	this.tri.display();			
+	this.scene.popMatrix();*/
+
 };
 
-MySubmarine.prototype.update = function (predicate) {
+
+MySubmarine.prototype.changePredicate = function (x){
+
+this.predicate = x;
+
+}
 
 
-if(predicate==0){
-	this.z = this.z + 0.1*Math.cos(this.ang*this.deg2rad);
-	this.x = this.x + 0.1*Math.sin(this.ang*this.deg2rad);
+MySubmarine.prototype.update = function (currTime) {
+
+/*var elapsed = 0;
+
+if(elapsed!=-1)
+elapsed=(currTime-this.startTime)/1000;*/
+
+var elapsed = (currTime-this.startTime)/1000;
+
+this.startTime = currTime;
+
+if(this.predicate=='w'){
+	this.speed = this.speed + 0.5;
+	
+	
 }
 	else
-	if(predicate==1){
-	this.z = this.z - 0.1*Math.cos(this.ang*this.deg2rad);
-	this.x = this.x - 0.1*Math.sin(this.ang*this.deg2rad);
+	if(this.predicate=='s'){
+		this.speed = this.speed - 0.5;
+	
 	}
 	else
-	if(predicate==2)
-	this.ang=this.ang+1;
+	if(this.predicate=='a'){
+	this.ang=this.ang + (this.speed*elapsed)*2; //multiply for 2 because it was too slow
+	if(this.speed!=0)
+	this.leme_ang_vertical = -45;
+	}
+	
+	
 	
 else
-if(predicate==3)
-	this.ang=this.ang-1;
+if(this.predicate=='d'){
+	this.ang=this.ang - (this.speed*elapsed)*2;
+	if(this.speed!=0)
+	this.leme_ang_vertical = 45;
+}
+
+else
+if(this.predicate=='q'){
+	this.y = this.y + 0.1;
+	this.leme_ang_horizontal = -45;
+}
+
+else
+if(this.predicate=='e'){
+	this.y = this.y - 0.1;
+	this.leme_ang_horizontal = 45;
+}
+	else
+if(this.predicate=='p'){
+	if(this.peri_y<2)   //2 is max value 
+		this.peri_y = this.peri_y + 0.1;
+}
+
+else
+if(this.predicate=='l'){
+	if(this.peri_y>1.10)   //1.10 is min value 
+		this.peri_y = this.peri_y - 0.1;
+	
+}
+
+else
+if(this.predicate=='f'){
+
+var torp = new MyTorpedo(this.scene,-7.5,-2,-6,this.ang)
+
+for(i = 0; i < this.targets.length; i++){
+		if(this.targets[i].destroyed==0){
+			torp.lock_target(this.targets[i]);		
+			break;
+	}
+}
 
 
+this.torpedos.push(torp);
+
+}
+
+/*if(this.predicate=='f'){
+	this.showTorpedo=1;
+	for(i = 0; i < this.targets.length; i++){
+		if(this.targets[i].destroyed==0){
+			this.torpedo.lock_target(this.targets[i]);		
+			break;
+	}
+	}
+	
+}*/
+
+
+		
+this.z = this.z +  (this.speed*elapsed)*Math.cos(this.ang*this.deg2rad);
+this.x = this.x + (this.speed*elapsed)*Math.sin(this.ang*this.deg2rad);
+
+
+
+this.helix_ang += elapsed* this.speed * Math.PI * 2;//%360;  //????  Corrigir isto, os angulos sao mts e nao se mantem mesmo
+
+
+//console.log("Angle: ", this.helix_ang);
+//console.log("Speed: ", this.speed);
+
+
+
+if(this.predicate!='a' && this.predicate!='d')
+this.leme_ang_vertical=0;
+
+if(this.predicate!='q' && this.predicate!='e')
+this.leme_ang_horizontal=0;
+
+this.predicate='z';
 }
 

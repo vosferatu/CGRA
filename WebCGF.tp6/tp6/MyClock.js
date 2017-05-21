@@ -44,8 +44,10 @@ function MyClock(scene) {
 	this.minuteHand.setAngle(180);
 	this.secondHand.setAngle(-90);
 
-	d = new Date();
+
+d = new Date();
 	this.startTime = d.getTime();
+	
 };
 
 MyClock.prototype = Object.create(CGFobject.prototype);
@@ -105,8 +107,10 @@ MyClock.prototype.display = function () {
 
 MyClock.prototype.update = function (currTime) {
 
-	var elapsed = currTime-this.startTime;
 
+var elapsed = currTime-this.startTime;
+
+		
 	if(elapsed >= 1000){
 		var sec = 360.0 * (1/60.0);
 		var min = 360.0 * (1/60.0/60.0);

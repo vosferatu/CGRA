@@ -21,11 +21,13 @@ serialInclude([
 	'MyPaperPlane.js',
 	'MyInterface.js',
 	'MySubmarine.js',
-	'MyDoubleCylinder.js',
 	'MyTopCylinder.js',
 	'MyTopLamp.js',
 	'MyTrapeze.js',
+	'MyLeme.js',
+	'MyTarget.js',
 	'MyTorpedo.js',
+	
 
 	main=function() {
 		var app = new CGFapplication(document.body);

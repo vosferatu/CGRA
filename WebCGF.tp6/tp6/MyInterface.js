@@ -76,17 +76,31 @@ MyInterface.prototype.processKeyboard = function(event) {
 	// for better cross-browser support, you may also check suggestions on using event.which in http://www.w3schools.com/jsref/event_key_keycode.asp
 	
 		
-		if (event.keyCode==97 || event.keyCode == 65)
-			this.scene.submarineMovement(2);
+		if (event.keyCode==97)	// only works for 'a', as it is
+			this.scene.submarine.changePredicate('a');
 
-		else if (event.keyCode==100  || event.keyCode == 68)
-			this.scene.submarineMovement(3);
+		else if (event.keyCode==100) // only works for 'd', as it is
+			this.scene.submarine.changePredicate('d');
 			
-		
-		else if (event.keyCode==119 || event.keyCode == 87)
-			this.scene.submarineMovement(0);
+		else if (event.keyCode==119)	// only works for 'w', as it is
+			this.scene.submarine.changePredicate('w');
 
-		else if (event.keyCode==115  || event.keyCode == 83)
-			this.scene.submarineMovement(1);
+		else if (event.keyCode==115)	// only works for 's', as it is
+			this.scene.submarine.changePredicate('s');
+
+		else if (event.keyCode==113)	// only works for 'q', as it is
+			this.scene.submarine.changePredicate('q');
 	
+		else if (event.keyCode==101)	// only works for 'e', as it is
+			this.scene.submarine.changePredicate('e');
+
+		else if (event.keyCode==112)	// only works for 'p', as it is
+			this.scene.submarine.changePredicate('p');
+
+		else if (event.keyCode==108)	// only works for 'l', as it is
+			this.scene.submarine.changePredicate('l');
+
+			else if (event.keyCode==102)	// only works for 'f', as it is
+			this.scene.submarine.changePredicate('f');
+
 };

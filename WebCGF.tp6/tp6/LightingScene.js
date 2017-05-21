@@ -27,10 +27,10 @@ this.Light_3=true;
 this.Light_4=true;
 
 
-//MUDEI
+
 this.currSubmarineAppearance=0;
 
-this.submarineAppearanceList={ 'boardAppearance':0, 'slidesAppearance':1, 'windowAppearance':2 };
+this.submarineAppearanceList={ 'subAppearance':0, 'slidesAppearance':1, 'windowAppearance':2 };
 
 	this.initCameras();
 
@@ -54,14 +54,35 @@ this.submarineAppearanceList={ 'boardAppearance':0, 'slidesAppearance':1, 'windo
 	this.chair = new MyChair(this);
 	this.column = new MyColumn(this);
 	this.clock = new MyClock(this);
-
-
-
-	this.submarine= new MySubmarine(this);
-	
+	this.target = new Array;
 	this.torpedo = new MyTorpedo(this);
+	
+	//this.trapeze = new MyTrapeze(this);
 
-	this.trapeze = new MyTrapeze(this);
+	//this.leme=new MyLeme(this);
+
+	//this.trap=new MyTrap(this);
+
+var init_pos_x = 10;
+var init_pos_y = 0.5;
+var init_pos_z = 10;
+	for(i = 0; i < 3; i++){
+		this.target.push(new MyTarget(this,init_pos_x,init_pos_y,init_pos_z));
+
+		init_pos_x-=3;
+		init_pos_z+=0.5;
+
+	}
+
+
+
+this.submarineAppearances = [
+            this.subAppearance,this.slidesAppearance,this.windowAppearance
+        ];
+
+
+	this.submarine= new MySubmarine(this,this.target);
+	
 
 	this.w=0;
 		
@@ -91,19 +112,20 @@ this.submarineAppearanceList={ 'boardAppearance':0, 'slidesAppearance':1, 'windo
 	this.materialC.setSpecular(0.3,0.3,0.3,1);	
 	this.materialC.setShininess(10);
 
-	this.materialD = new CGFappearance(this);
-	this.materialD.setAmbient(0.3,0.3,0.3,1);
-	this.materialD.setDiffuse(1,0.3,0,1);
-	this.materialD.setSpecular(0.3,0.3,0.3,1);	
-	this.materialD.setShininess(10);
+	this.torpedoAppearance = new CGFappearance(this);
+	this.torpedoAppearance.setAmbient(0.5,0.5,0.5,1);
+	this.torpedoAppearance.setDiffuse(0.72,0.72,0.72,1);
+	this.torpedoAppearance.setSpecular(0.1,0.1,0.1,1);
+	this.torpedoAppearance.setShininess(20);
+	this.torpedoAppearance.loadTexture("../resources/images/torpedo.png");
 
 	this.floorAppearance = new CGFappearance(this);
-	//this.floorAppearance.setAmbient(0.3,0.3,0.3,1);
-	//this.floorAppearance.setDiffuse(0.72,0.45,0.2,1);
-	//this.floorAppearance.setSpecular(0.5,0.5,0.5,0);
-	//this.floorAppearance.setShininess(120);
-	this.floorAppearance.loadTexture("../resources/images/fundo.png");
-	this.floorAppearance.setTextureWrap("REPEAT","REPEAT");
+	this.floorAppearance.setAmbient(1,1,1,1);
+	this.floorAppearance.setDiffuse(0.72,0.72,0.72,1);
+	this.floorAppearance.setSpecular(1,1,1,1);
+	this.floorAppearance.setShininess(100);
+	this.floorAppearance.loadTexture("../resources/images/oceano.png");
+	this.floorAppearance.setTextureWrap("CLAMP_TO_EDGE","CLAMP_TO_EDGE");
 
 	this.windowAppearance = new CGFappearance(this);
 	this.windowAppearance.setAmbient(0.3,0.3,0.3,1);
@@ -120,22 +142,21 @@ this.submarineAppearanceList={ 'boardAppearance':0, 'slidesAppearance':1, 'windo
 	this.slidesAppearance.setShininess(20);
 	this.slidesAppearance.loadTexture("../resources/images/slides.png");
 
-	this.boardAppearance = new CGFappearance(this);
-	this.boardAppearance.setAmbient(0.5,0.5,0.5,1);
-	this.boardAppearance.setDiffuse(0.2,0.2,0.2,1);
-	this.boardAppearance.setSpecular(0.3,0.3,0.3,0);
-	this.boardAppearance.setShininess(120);
-	this.boardAppearance.loadTexture("../resources/images/board.png");
+	this.subAppearance = new CGFappearance(this);
+	this.subAppearance.setAmbient(0.5,0.5,0.5,1);
+	this.subAppearance.setDiffuse(0.2,0.2,0.2,1);
+	this.subAppearance.setSpecular(0.3,0.3,0.3,0);
+	this.subAppearance.setShininess(120);
+	this.subAppearance.loadTexture("../resources/images/submarino.png");
 
 
-//MUDEI
 
 this.submarineAppearances = [
-            this.boardAppearance,this.slidesAppearance,this.windowAppearance
+            this.subAppearance,this.slidesAppearance,this.windowAppearance
         ];
 
 
-	this.setUpdatePeriod(100);
+	this.setUpdatePeriod(25);
 	
 };
 
@@ -271,19 +292,20 @@ LightingScene.prototype.display = function() {
 
 	
 
-
-	this.pushMatrix();
-		this.slidesAppearance.apply();
-		this.trapeze.display();
-	this.popMatrix();
-
-
-	this.pushMatrix();
-		this.torpedo.display();
-	this.popMatrix();
-
+//Target
+for(i=0; i<3; i++){
 this.pushMatrix();
-this.translate(0,0,0.31);
+	//this.translate(8,5,-0.77);
+	this.target[i].display();
+	this.popMatrix();	
+}
+
+/*this.pushMatrix();
+	//this.translate(8,5,-0.77);
+	this.target.display();
+	this.popMatrix();*/
+
+
 	//clock
 	this.pushMatrix();
 	this.translate(8,5,-0.77);
@@ -296,57 +318,65 @@ this.translate(0,0,0.31);
 		this.scale(2,1.7,0.4);
 		this.column.display();
 	this.popMatrix();
-	
-	this.popMatrix();
+
 
 	// Floor
 	this.pushMatrix();
 		this.translate(7.5, 0, 7.5);
 		this.rotate(-90 * degToRad, 1, 0, 0);
-		this.scale(15, 15, 0.2);
+		//this.scale(15, 15, 0.2);
+		this.scale(200, 200, 5);
 		this.floorAppearance.apply();
 		this.floor.display();
 	this.popMatrix();
 
 		// Submarine
 	this.pushMatrix();
-	this.translate(7.5, 0.5, 8);
+	this.translate(7.5, 2, 8);
 		this.rotate(-180 * degToRad, 0, 1, 0);
-		//MUDEI
 		this.submarineAppearances[this.currSubmarineAppearance].apply();
 		this.submarine.display();
 	this.popMatrix();
 
+
+// Torpedo
+	this.pushMatrix();
+	//this.translate(7.5, 1, 8);
+		//this.torpedoAppearance.apply();
+		//this.torpedo.display();
+	this.popMatrix();
 /*
-	// Plane Wall
+	//trapeze
 	this.pushMatrix();
-		this.translate(7.5, 4, 0);
-		this.scale(15, 8, 0.2);
-		this.materialD.apply();
-		this.wall.display();
+	this.translate(0,5,0);
+	//this.trapeze.display();
 	this.popMatrix();
 
-		// Left Wall
+	//trapeze
 	this.pushMatrix();
-		this.translate(0, 4, 7.5);
-		this.rotate(90 * degToRad, 0, 1, 0);
-		this.scale(15, 8, 0.2);
-		this.windowAppearance.apply();
-		this.wall.display();
+	this.translate(0,2,0);
+	//this.leme.display();
 	this.popMatrix();
 
-
-
+	//trapeze
+	this.pushMatrix();
+	this.translate(0,2,2);
+	//this.trap.display();
+	this.popMatrix();
 */
-
 
 
 	// ---- END Primitive drawing section
 };
 
 LightingScene.prototype.update = function(currTime) {
+	
+		
 	if(this.Clock_Working)
 	this.clock.update(currTime);
+
+
+	this.submarine.update(currTime);
 	
 }
 
@@ -355,25 +385,10 @@ LightingScene.prototype.doSomething = function (){
    };
 
 
-LightingScene.prototype.submarineMovement = function (x){ 
+/*LightingScene.prototype.submarineMovement = function (x, currTime){ 
    	
-	this.submarine.update(x);
+	this.submarine.update(x,currTime);
 
-	/*if(x==0){
-	this.submarine_z = this.submarine_z + 0.1*Math.cos(this.submarine_ang*this.deg2rad);
-	this.submarine_x = this.submarine_x + 0.1*Math.sin(this.submarine_ang*this.deg2rad);
-}
-	else
-	if(x==1){
-	this.submarine_z = this.submarine_z - 0.1*Math.cos(this.submarine_ang*this.deg2rad);
-	this.submarine_x = this.submarine_x - 0.1*Math.sin(this.submarine_ang*this.deg2rad);
-	}
-	else
-	if(x==2)
-	this.submarine_ang=this.submarine_ang+1;
 	
-else
-if(x==3)
-	this.submarine_ang=this.submarine_ang-1;*/
 
-   };
+   };*/
