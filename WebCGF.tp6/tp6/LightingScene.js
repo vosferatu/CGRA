@@ -50,7 +50,6 @@ this.submarineAppearanceList={ 'subAppearance':0, 'slidesAppearance':1, 'windowA
 	
 	this.wall = new MyQuad(this, -0.5, 1.5, -0.5, 1.5);
 	this.floor = new Plane(this);
-	//this.floor = new MyQuad(this, 0, 10, 0, 12);
 	this.chair = new MyChair(this);
 	this.column = new MyColumn(this);
 	this.clock = new MyClock(this);
@@ -114,6 +113,10 @@ this.submarineAppearances = [
 	this.torpedoAppearance.loadTexture("../resources/images/torpedo.png");
 
 	this.floorAppearance = new CGFappearance(this);
+	this.floorAppearance.setAmbient(1,1,1,1);
+	this.floorAppearance.setDiffuse(0.72,0.72,0.72,1);
+	this.floorAppearance.setSpecular(1,1,1,1);
+	this.floorAppearance.setShininess(100);
 	this.floorAppearance.loadTexture("../resources/images/oceano.png");
 	this.floorAppearance.setTextureWrap("CLAMP_TO_EDGE","CLAMP_TO_EDGE");
 
@@ -146,7 +149,7 @@ this.submarineAppearances = [
         ];
 
 
-	this.setUpdatePeriod(10);
+	this.setUpdatePeriod(25);
 	
 };
 
@@ -289,8 +292,7 @@ this.pushMatrix();
 	this.popMatrix();	
 }
 
-this.pushMatrix();
-this.translate(0,0,0.31);
+
 	//clock
 	this.pushMatrix();
 	this.translate(8,5,-0.77);
@@ -304,13 +306,13 @@ this.translate(0,0,0.31);
 		this.column.display();
 	this.popMatrix();
 	
-	this.popMatrix();
+
 
 	// Floor
 	this.pushMatrix();
 		this.translate(7.5, 0, 7.5);
 		this.rotate(-90 * degToRad, 1, 0, 0);
-		this.scale(15, 15, 0.2);
+		this.scale(200, 200, 5);
 		this.floorAppearance.apply();
 		this.floor.display();
 	this.popMatrix();
@@ -322,6 +324,9 @@ this.translate(0,0,0.31);
 		this.submarineAppearances[this.currSubmarineAppearance].apply();
 		this.submarine.display();
 	this.popMatrix();
+
+
+
 
 	// ---- END Primitive drawing section
 };

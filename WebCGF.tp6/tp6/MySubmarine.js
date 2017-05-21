@@ -50,11 +50,11 @@ function MySubmarine(scene,targets) {
 
 	
 
-	//this.torpedo = new MyTorpedo(this.scene,-7.5,-2,-6);
+	
 	
 	this.torpedos = new Array();
 
-	//this.showTorpedo = 0;
+	
 
 	this.targets=targets;
 
@@ -201,23 +201,17 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 		this.trapmid.display();
 	this.scene.popMatrix();
 
-// Torpedo
-	/*if(this.showTorpedo==1){
-	this.scene.pushMatrix();
-	this.scene.translate(7.5, 1, 8);
-	this.torpedo.display();
-	this.scene.popMatrix();
-	}*/
 
-	
 
 	this.scene.popMatrix();
 
 	for(i=0; i<this.torpedos.length; i++){
 		this.scene.pushMatrix();
 			this.torpedos[i].display();
+			this.torpedos[i].update();
 		this.scene.popMatrix();	
 	}
+
 
 };
 
@@ -231,10 +225,6 @@ MySubmarine.prototype.changePredicate = function (x){
 
 MySubmarine.prototype.update = function (currTime) {
 
-/*var elapsed = 0;
-
-if(elapsed!=-1)
-elapsed=(currTime-this.startTime)/1000;*/
 
 var elapsed = (currTime-this.startTime)/1000;
 
@@ -297,7 +287,6 @@ if(this.predicate=='f'){
 		if(this.targets[i].destroyed==0){
 			var torp = new MyTorpedo(this.scene, this, this.targets[i]);
 			this.torpedos.push(torp);
-			//this.targets.splice(i, 1);
 			break;
 		}
 	}
@@ -305,26 +294,13 @@ if(this.predicate=='f'){
 }
 
 	for(i = 0; i < this.torpedos.length; i++){
-		if(this.torpedos[i].t >= 1){
+		if(this.torpedos[i].t > 1){
 			this.torpedos[i].target = null;			
 			this.torpedos.splice(i,1);
 			i--;
 		}
-		else {
-			this.torpedos[i].update();
-		}
 	}
 
-/*if(this.predicate=='f'){
-	this.showTorpedo=1;
-	for(i = 0; i < this.targets.length; i++){
-		if(this.targets[i].destroyed==0){
-			this.torpedo.lock_target(this.targets[i]);		
-			break;
-	}
-	}
-	
-}*/
 
 
 		
@@ -333,11 +309,9 @@ this.x = this.x + (this.speed*elapsed)*Math.sin(this.ang*this.deg2rad);
 
 
 
-this.helix_ang += elapsed* this.speed * Math.PI * 2;//%360;  //????  Corrigir isto, os angulos sao mts e nao se mantem mesmo
+this.helix_ang += elapsed* this.speed * Math.PI * 2;
 
 
-//console.log("Angle: ", this.helix_ang);
-//console.log("Speed: ", this.speed);
 
 
 
