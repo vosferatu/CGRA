@@ -58,8 +58,10 @@ this.submarineAppearanceList={ 'subAppearance':0, 'slidesAppearance':1, 'windowA
 
 var init_pos_x = 10;
 var init_pos_y = 0.5;
-var init_pos_z = 10;
-	for(i = 0; i < 3; i++){
+var init_pos_z = 1;
+
+var maxTarg=Math.floor(Math.random() * 10) + 2;
+	for(i = 0; i < maxTarg ; i++){
 		this.target.push(new MyTarget(this,init_pos_x,init_pos_y,init_pos_z));
 
 		init_pos_x-=3;
@@ -74,7 +76,7 @@ this.submarineAppearances = [
         ];
 
 
-	this.submarine= new MySubmarine(this,this.target);
+	this.submarine= new MySubmarine(this);
 	
 
 	this.w=0;
@@ -114,9 +116,9 @@ this.submarineAppearances = [
 
 	this.floorAppearance = new CGFappearance(this);
 	this.floorAppearance.setAmbient(1,1,1,1);
- 	this.floorAppearance.setDiffuse(0.72,0.72,0.72,1);
- 	this.floorAppearance.setSpecular(1,1,1,1);
- 	this.floorAppearance.setShininess(100);
+	this.floorAppearance.setDiffuse(0.72,0.72,0.72,1);
+	this.floorAppearance.setSpecular(1,1,1,1);
+	this.floorAppearance.setShininess(100);
 	this.floorAppearance.loadTexture("../resources/images/oceano.png");
 	this.floorAppearance.setTextureWrap("CLAMP_TO_EDGE","CLAMP_TO_EDGE");
 
@@ -149,7 +151,7 @@ this.submarineAppearances = [
         ];
 
 
-	this.setUpdatePeriod(25);
+	this.setUpdatePeriod(20);
 	
 };
 
@@ -288,9 +290,17 @@ LightingScene.prototype.display = function() {
 //Target
 for(i=0; i<this.target.length; i++){
 this.pushMatrix();
+if(this.target[i].over==0)
 	this.target[i].display();
+
+else{
+	this.target.splice(i,1);  
+	i--;
+}
+
 	this.popMatrix();	
 }
+
 
 	//clock
 	this.pushMatrix();
@@ -304,6 +314,8 @@ this.pushMatrix();
 		this.scale(2,1.7,0.4);
 		this.column.display();
 	this.popMatrix();
+	
+
 
 	// Floor
 	this.pushMatrix();
@@ -321,6 +333,9 @@ this.pushMatrix();
 		this.submarineAppearances[this.currSubmarineAppearance].apply();
 		this.submarine.display();
 	this.popMatrix();
+
+
+
 
 	// ---- END Primitive drawing section
 };
@@ -341,10 +356,3 @@ LightingScene.prototype.doSomething = function (){
    };
 
 
-/*LightingScene.prototype.submarineMovement = function (x, currTime){ 
-   	
-	this.submarine.update(x,currTime);
-
-	
-
-   };*/

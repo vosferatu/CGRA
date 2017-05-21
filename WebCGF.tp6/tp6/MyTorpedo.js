@@ -15,23 +15,25 @@ function MyTorpedo(scene, submarine, target) {
 	
 	this.sub_x= submarine.x;
 	this.sub_y= submarine.y-1;
-	this.sub_z= submarine.z+3;
-	this.sub_ang= submarine.ang;
+	this.sub_z= submarine.z+2;
+	this.sub_ang= submarine.ang-180;
 
 	this.x= submarine.x;
 	this.y= submarine.y-1;
-	this.z= submarine.z+3;
+	this.z= submarine.z;
 
 	this.ang = 0;
 	this.rotation = 0;
 
 	this.target = target;
-
+	
+	
 	this.t = 0.0;
-	var dist = Math.sqrt((this.scene.target[i].x-this.x, 2) +
-								Math.pow(this.scene.target[i].y-this.y, 2) +
-								Math.pow(this.scene.target[i].z-this.z, 2));
-	this.elapsed = 25 / (1000 * dist);
+	this.dist = Math.sqrt(((7.5-this.target.x)-this.x, 2) +
+								Math.pow((2-this.target.y)-this.y, 2) +
+								Math.pow((8-this.target.z)-this.z, 2));
+	
+	
 
 	this.degToRad = Math.PI / 180.0;
 
@@ -41,6 +43,7 @@ function MyTorpedo(scene, submarine, target) {
 	this.torpedoAppearance.setSpecular(0.1,0.1,0.1,1);
 	this.torpedoAppearance.setShininess(20);
 	this.torpedoAppearance.loadTexture("../resources/images/torpedo.png");
+
 
 	this.initBuffers();
 };
@@ -100,8 +103,12 @@ this.scene.popMatrix();
 	
 };
 
-MyTorpedo.prototype.update = function(){
-	this.t += this.elapsed;
+MyTorpedo.prototype.update = function(elapsed){
+	
+
+
+	this.t += (elapsed/ this.dist);
+	
 
 	var g1 = Math.pow(1-this.t, 3);
 	var g2 = 3*this.t*Math.pow(1-this.t, 2);
@@ -109,9 +116,9 @@ MyTorpedo.prototype.update = function(){
 	var g4 = Math.pow(this.t, 3);
 
 	var p1x = this.sub_x; var p1y = this.sub_y; var p1z = this.sub_z;
-	var p2x = this.sub_x-6*-Math.sin(this.sub_ang*this.degToRad); var p2y = this.sub_y; var p2z = this.sub_z-6*-Math.cos(this.sub_ang*this.degToRad);
+	var p2x = this.sub_x+6*-Math.sin(this.sub_ang*this.degToRad); var p2y = this.sub_y; var p2z = this.sub_z+6*-Math.cos(this.sub_ang*this.degToRad);
 	var p3x = 7.5-this.target.x; var p3y = this.target.y + 3; var p3z = 8-this.target.z;
-	var p4x = 7.5-this.target.x; var p4y = this.target.y-0.65; var p4z = 8-this.target.z;
+	var p4x = 7.5-this.target.x; var p4y = this.target.y-0.5; var p4z = 8-this.target.z;
 
 	var old_x = this.x; var old_y = this.y; var old_z = this.z;
 
@@ -124,6 +131,4 @@ MyTorpedo.prototype.update = function(){
 	this.rotation = delta_x / Math.abs(delta_x) * Math.acos(delta_z / Math.sqrt(Math.pow(delta_x, 2) + Math.pow(delta_z, 2)));
 	this.ang = Math.asin(-delta_y / Math.sqrt(Math.pow(delta_x, 2) + Math.pow(delta_y, 2) + Math.pow(delta_z, 2)));
 
-	if (this.t >= 1)
-		this.elapsed = 0;
 };

@@ -3,7 +3,7 @@
  * @param gl {WebGLRenderingContext}
  * @constructor
  */
-function MySubmarine(scene,targets) {
+function MySubmarine(scene) {
 
 	CGFobject.call(this,scene);
 
@@ -37,9 +37,7 @@ function MySubmarine(scene,targets) {
 	this.currTime=0;
 
 	this.ang=0;
-
-	this.ang_up = 0;
-
+	this.ang_up=0;
 	this.speed=0;
 
 	this.predicate = 'z';
@@ -49,10 +47,12 @@ function MySubmarine(scene,targets) {
 	this.helix_ang = 0;
 	this.leme_ang_vertical = 0;
 	this.leme_ang_horizontal = 0;
+
+	
+
+	
 	
 	this.torpedos = new Array();
-
-	this.targets=targets;
 
 	d = new Date();
 	this.startTime = d.getTime();
@@ -67,10 +67,9 @@ MySubmarine.prototype.display = function () {
 
 //Movement
 this.scene.pushMatrix();
-	this.scene.translate(this.x,this.y,this.z);
-	this.scene.rotate(this.ang*this.deg2rad,0,1,0);
-
-	this.scene.rotate(this.ang_up*this.deg2rad,1,0,0);
+this.scene.translate(this.x,this.y,this.z);
+this.scene.rotate(this.ang*this.deg2rad,0,1,0);
+this.scene.rotate(this.ang_up*this.deg2rad,1,0,0);
 
 //main cylinder
 	this.scene.pushMatrix();
@@ -187,8 +186,9 @@ this.scene.pushMatrix();
 		this.scene.scale(2.34,0.08,0.23);
 		this.traphor.display();
 	this.scene.popMatrix();
+this.scene.popMatrix();
+	
 
-	this.scene.popMatrix();
 
 	//mid trapeze
 	this.scene.pushMatrix();
@@ -197,15 +197,17 @@ this.scene.pushMatrix();
 		this.scene.rotate(Math.PI,0,1,0);
 		this.trapmid.display();
 	this.scene.popMatrix();
-	
+
+
+
 	this.scene.popMatrix();
 
 	for(i=0; i<this.torpedos.length; i++){
 		this.scene.pushMatrix();
 			this.torpedos[i].display();
-			//this.torpedos[i].update();
 		this.scene.popMatrix();	
 	}
+
 
 };
 
@@ -218,6 +220,7 @@ MySubmarine.prototype.changePredicate = function (x){
 
 
 MySubmarine.prototype.update = function (currTime) {
+
 
 var elapsed = (currTime-this.startTime)/1000;
 
@@ -251,15 +254,13 @@ if(this.predicate=='d'){
 
 else
 if(this.predicate=='q'){
-	//this.y = this.y + 0.1;
 	this.ang_up = this.ang_up - (this.speed*elapsed)*2;
 	this.leme_ang_horizontal = -45;
 }
 
 else
 if(this.predicate=='e'){
-	//this.y = this.y - 0.1;
-	this.ang_up = this.ang_up +(this.speed*elapsed)*2;
+	this.ang_up = this.ang_up + (this.speed*elapsed)*2;
 	this.leme_ang_horizontal = 45;
 }
 	else
@@ -278,11 +279,11 @@ if(this.predicate=='l'){
 else
 if(this.predicate=='f'){
 
-	for(i = 0; i < this.targets.length; i++){
-		if(this.targets[i].destroyed==0){
-			var torp = new MyTorpedo(this.scene, this, this.targets[i]);
+	for(i = 0; i < this.scene.target.length; i++){
+		if(this.scene.target[i].locked==0){
+			var torp = new MyTorpedo(this.scene, this, this.scene.target[i]);
 			this.torpedos.push(torp);
-			//this.targets.splice(i, 1);
+			this.scene.target[i].locked=1;
 			break;
 		}
 	}
@@ -291,37 +292,39 @@ if(this.predicate=='f'){
 
 	for(i = 0; i < this.torpedos.length; i++){
 		if(this.torpedos[i].t >= 1){
-			var j=this.targets.indexOf(this.torpedos[i].target);
- 			
- 			this.scene.target.splice(j,1);
- 			this.torpedos[i].target = null;
- 			console.log("Torp_x: ",this.torpedos[i].x);	
- 			console.log("Torp_y: ",this.torpedos[i].y);
- 			console.log("Torp_z: ",this.torpedos[i].z);	
- 		
+			var j=this.scene.target.indexOf(this.torpedos[i].target);
+			this.scene.target[j].destroyed=1;
+			
+			this.torpedos[i].target = null;	
 			this.torpedos.splice(i,1);
 			i--;
+
 		}
-		else {
-			this.torpedos[i].update();
-		}
+		else
+			this.torpedos[i].update(elapsed);
 	}
+
+
+
 		
-	this.z = this.z +  (this.speed*elapsed)*Math.cos(this.ang*this.deg2rad);
-	this.x = this.x + (this.speed*elapsed)*Math.sin(this.ang*this.deg2rad);
-	this.y = this.y - (this.speed*elapsed)*Math.sin(this.ang_up*this.deg2rad);
+this.z = this.z +  (this.speed*elapsed)*Math.cos(this.ang*this.deg2rad);
+this.x = this.x + (this.speed*elapsed)*Math.sin(this.ang*this.deg2rad);
+this.y = this.y - (this.speed*elapsed)*Math.sin(this.ang_up*this.deg2rad);
 
 
 
-	this.helix_ang += elapsed* this.speed * Math.PI * 2;
+this.helix_ang += elapsed* this.speed * Math.PI * 2;
+
+
+
 
 
 if(this.predicate!='a' && this.predicate!='d')
-	this.leme_ang_vertical=0;
+this.leme_ang_vertical=0;
 
 if(this.predicate!='q' && this.predicate!='e')
-	this.leme_ang_horizontal=0;
+this.leme_ang_horizontal=0;
 
 this.predicate='z';
-
 }
+
