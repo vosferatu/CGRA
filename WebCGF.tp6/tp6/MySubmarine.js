@@ -18,8 +18,8 @@ function MySubmarine(scene,targets) {
 	this.periscope1 = new MyCylinder(this.scene, 12, 32);
 	this.periscope2 = new MyTopCylinder(this.scene, 12, 32);
 
-	this.rotor1 = new MyDoubleCylinder(this.scene, 64, 32);
-	this.rotor2 = new MyDoubleCylinder(this.scene, 64, 32);
+	this.rotor1 = new MyCylinder(this.scene, 64, 32);
+	this.rotor2 = new MyCylinder(this.scene, 64, 32);
 
 	this.helix1 = new MyUnitCubeQuad(this.scene);
 	this.helix2 = new MyUnitCubeQuad(this.scene);
