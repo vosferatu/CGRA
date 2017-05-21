@@ -7,9 +7,6 @@ function MySubmarine(scene,targets) {
 
 	CGFobject.call(this,scene);
 
-	this.tri=new MyTriangle(this.scene);
-	
-
 	this.body = new MyCylinder(this.scene, 12, 32);
 	this.front = new MyLamp(this.scene, 12, 32);
 	this.back = new MyLamp(this.scene, 12, 32);
@@ -29,8 +26,6 @@ function MySubmarine(scene,targets) {
 	this.trapvert = new MyTrapeze(this.scene);
 	this.traphor = new MyTrapeze(this.scene);
 	this.trapmid = new MyTrapeze(this.scene);
-
-	this.tri.initBuffers();
 
 	this.deg2rad=Math.PI/180.0;
 
@@ -219,29 +214,19 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 	this.scene.popMatrix();
 
 	for(i=0; i<this.torpedos.length; i++){
-this.scene.pushMatrix();
-this.scene.translate(7.5, 1, 8);
-	this.torpedos[i].display();
-	this.torpedos[i].update();
-	this.scene.popMatrix();	
-}
-
-
-	//TRIANGLE
-	/*this.scene.pushMatrix();
-
-	this.scene.translate(this.x,this.y,this.z);
-	this.scene.rotate(this.ang*this.deg2rad,0,1,0); 
-
-	this.tri.display();			
-	this.scene.popMatrix();*/
+		this.scene.pushMatrix();
+			this.scene.translate(7.5, 1, 8);
+			this.torpedos[i].display();
+			this.torpedos[i].update();
+		this.scene.popMatrix();	
+	}
 
 };
 
 
 MySubmarine.prototype.changePredicate = function (x){
 
-this.predicate = x;
+	this.predicate = x;
 
 }
 
@@ -310,19 +295,27 @@ if(this.predicate=='l'){
 else
 if(this.predicate=='f'){
 
-var torp = new MyTorpedo(this.scene,-7.5,-2,-6,this.ang)
-
-for(i = 0; i < this.targets.length; i++){
+	for(i = 0; i < this.targets.length; i++){
 		if(this.targets[i].destroyed==0){
-			torp.lock_target(this.targets[i]);		
+			var torp = new MyTorpedo(this.scene, this, this.targets[i]);
+			this.torpedos.push(torp);
 			break;
+		}
 	}
-}
-
-
-this.torpedos.push(torp);
 
 }
+
+	for(i = 0; i < this.torpedos.length; i++){
+		if(this.torpedos[i].t >= 1){
+			this.scene.target.splice(this.scene.target.indexOf(this.torpedo[i].target), 1);
+			this.targets.splice(this.targets.indexOf(this.torpedo[i].target), 1);
+			this.torpedos.splice(i,1);
+			i--;
+		}
+		else {
+			this.torpedos[i].update();
+		}
+	}
 
 /*if(this.predicate=='f'){
 	this.showTorpedo=1;

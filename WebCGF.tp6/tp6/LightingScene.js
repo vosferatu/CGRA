@@ -55,7 +55,6 @@ this.submarineAppearanceList={ 'subAppearance':0, 'slidesAppearance':1, 'windowA
 	this.column = new MyColumn(this);
 	this.clock = new MyClock(this);
 	this.target = new Array;
-	this.torpedo = new MyTorpedo(this);
 	
 
 var init_pos_x = 10;
@@ -147,7 +146,7 @@ this.submarineAppearances = [
         ];
 
 
-	this.setUpdatePeriod(25);
+	this.setUpdatePeriod(10);
 	
 };
 
@@ -286,16 +285,9 @@ LightingScene.prototype.display = function() {
 //Target
 for(i=0; i<3; i++){
 this.pushMatrix();
-	//this.translate(8,5,-0.77);
 	this.target[i].display();
 	this.popMatrix();	
 }
-
-/*this.pushMatrix();
-	//this.translate(8,5,-0.77);
-	this.target.display();
-	this.popMatrix();*/
-
 
 this.pushMatrix();
 this.translate(0,0,0.31);
@@ -331,13 +323,6 @@ this.translate(0,0,0.31);
 		this.submarine.display();
 	this.popMatrix();
 
-
-// Torpedo
-	this.pushMatrix();
-	//this.translate(7.5, 1, 8);
-		//this.torpedoAppearance.apply();
-		//this.torpedo.display();
-	this.popMatrix();
 /*
 	// Plane Wall
 	this.pushMatrix();
