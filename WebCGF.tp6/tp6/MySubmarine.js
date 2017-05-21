@@ -38,6 +38,8 @@ function MySubmarine(scene,targets) {
 
 	this.ang=0;
 
+	this.ang_up = 0;
+
 	this.speed=0;
 
 	this.predicate = 'z';
@@ -65,9 +67,10 @@ MySubmarine.prototype.display = function () {
 
 //Movement
 this.scene.pushMatrix();
-this.scene.translate(this.x,this.y,this.z);
-this.scene.rotate(this.ang*this.deg2rad,0,1,0);
+	this.scene.translate(this.x,this.y,this.z);
+	this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 
+	this.scene.rotate(this.ang_up*this.deg2rad,1,0,0);
 
 //main cylinder
 	this.scene.pushMatrix();
@@ -248,13 +251,15 @@ if(this.predicate=='d'){
 
 else
 if(this.predicate=='q'){
-	this.y = this.y + 0.1;
+	//this.y = this.y + 0.1;
+	this.ang_up = this.ang_up - (this.speed*elapsed)*2;
 	this.leme_ang_horizontal = -45;
 }
 
 else
 if(this.predicate=='e'){
-	this.y = this.y - 0.1;
+	//this.y = this.y - 0.1;
+	this.ang_up = this.ang_up +(this.speed*elapsed)*2;
 	this.leme_ang_horizontal = 45;
 }
 	else
@@ -304,6 +309,7 @@ if(this.predicate=='f'){
 		
 	this.z = this.z +  (this.speed*elapsed)*Math.cos(this.ang*this.deg2rad);
 	this.x = this.x + (this.speed*elapsed)*Math.sin(this.ang*this.deg2rad);
+	this.y = this.y - (this.speed*elapsed)*Math.sin(this.ang_up*this.deg2rad);
 
 
 
