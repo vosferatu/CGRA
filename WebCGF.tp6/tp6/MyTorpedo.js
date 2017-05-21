@@ -27,12 +27,12 @@ function MyTorpedo(scene, submarine, target) {
 
 	this.target = target;
 
-	this.t = 0;
-	var dist = Math.sqrt((this.scene.target[i].x-this.x, 2) +
-								Math.pow(this.scene.target[i].y-this.y, 2) +
-								Math.pow(this.scene.target[i].z-this.z, 2));
+	this.t = 0.0;
+	this.dist = Math.sqrt(((7.5-this.target.x)-this.x, 2) +
+								Math.pow((2-this.target.y)-this.y, 2) +
+								Math.pow((8-this.target.z)-this.z, 2));
 	
-	this.elapsed = 25 / (1000 * dist);
+	//this.elapsed;// = 25 / (1000 * dist);
 
 	this.degToRad = Math.PI / 180.0;
 
@@ -42,6 +42,7 @@ function MyTorpedo(scene, submarine, target) {
 	this.torpedoAppearance.setSpecular(0.1,0.1,0.1,1);
 	this.torpedoAppearance.setShininess(20);
 	this.torpedoAppearance.loadTexture("../resources/images/torpedo.png");
+
 
 	this.initBuffers();
 };
@@ -101,8 +102,12 @@ this.scene.popMatrix();
 	
 };
 
-MyTorpedo.prototype.update = function(){
-	this.t += this.elapsed;
+MyTorpedo.prototype.update = function(elapsed){
+	
+
+
+	this.t += (elapsed/ this.dist);
+	console.log("T: ", this.t);
 
 	var g1 = Math.pow(1-this.t, 3);
 	var g2 = 3*this.t*Math.pow(1-this.t, 2);

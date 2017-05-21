@@ -208,7 +208,7 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 	for(i=0; i<this.torpedos.length; i++){
 		this.scene.pushMatrix();
 			this.torpedos[i].display();
-			this.torpedos[i].update();
+			//this.torpedos[i].update();
 		this.scene.popMatrix();	
 	}
 
@@ -294,11 +294,20 @@ if(this.predicate=='f'){
 }
 
 	for(i = 0; i < this.torpedos.length; i++){
-		if(this.torpedos[i].t > 1){
-			this.torpedos[i].target = null;			
+		if(this.torpedos[i].t >= 1){
+			var j=this.targets.indexOf(this.torpedos[i].target);
+			
+			this.scene.target.splice(j,1);
+			this.torpedos[i].target = null;
+			console.log("Torp_x: ",this.torpedos[i].x);	
+			console.log("Torp_y: ",this.torpedos[i].y);
+			console.log("Torp_z: ",this.torpedos[i].z);		
 			this.torpedos.splice(i,1);
 			i--;
+
 		}
+		else
+			this.torpedos[i].update(elapsed);
 	}
 
 

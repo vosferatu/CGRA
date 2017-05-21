@@ -286,7 +286,7 @@ LightingScene.prototype.display = function() {
 	
 
 //Target
-for(i=0; i<3; i++){
+for(i=0; i<this.target.length; i++){
 this.pushMatrix();
 	this.target[i].display();
 	this.popMatrix();	
