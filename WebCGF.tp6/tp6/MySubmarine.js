@@ -3,12 +3,9 @@
  * @param gl {WebGLRenderingContext}
  * @constructor
  */
-function MySubmarine(scene,targets) {
+function MySubmarine(scene) {
 
 	CGFobject.call(this,scene);
-
-	this.tri=new MyTriangle(this.scene);
-	
 
 	this.body = new MyCylinder(this.scene, 12, 32);
 	this.front = new MyLamp(this.scene, 12, 32);
@@ -26,11 +23,9 @@ function MySubmarine(scene,targets) {
 	this.helixcenter1 = new MyTopLamp(this.scene, 64, 32);
 	this.helixcenter2 = new MyTopLamp(this.scene, 64, 32);
 
-	this.trapvert = new MyLeme(this.scene);
-	this.traphor = new MyLeme(this.scene);
-	this.trapmid = new MyLeme(this.scene);
-
-	this.tri.initBuffers();
+	this.trapvert = new MyTrapeze(this.scene);
+	this.traphor = new MyTrapeze(this.scene);
+	this.trapmid = new MyTrapeze(this.scene);
 
 	this.deg2rad=Math.PI/180.0;
 
@@ -42,7 +37,7 @@ function MySubmarine(scene,targets) {
 	this.currTime=0;
 
 	this.ang=0;
-
+	this.ang_up=0;
 	this.speed=0;
 
 	this.predicate = 'z';
@@ -55,13 +50,9 @@ function MySubmarine(scene,targets) {
 
 	
 
-	//this.torpedo = new MyTorpedo(this.scene,-7.5,-2,-6);
+	
 	
 	this.torpedos = new Array();
-
-	//this.showTorpedo = 0;
-
-	this.targets=targets;
 
 	d = new Date();
 	this.startTime = d.getTime();
@@ -78,7 +69,7 @@ MySubmarine.prototype.display = function () {
 this.scene.pushMatrix();
 this.scene.translate(this.x,this.y,this.z);
 this.scene.rotate(this.ang*this.deg2rad,0,1,0);
-
+this.scene.rotate(this.ang_up*this.deg2rad,1,0,0);
 
 //main cylinder
 	this.scene.pushMatrix();
@@ -178,7 +169,7 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 
 	this.scene.pushMatrix();
 		this.scene.translate(0,0.02,-0.1);
-		this.scene.scale(0.08,1.5,0.23);
+		this.scene.scale(0.08,2.34,0.23);
 		this.scene.rotate(Math.PI/2,0,0,1);
 		this.trapvert.display();
 	this.scene.popMatrix();
@@ -192,65 +183,44 @@ this.scene.rotate(this.ang*this.deg2rad,0,1,0);
 
 	this.scene.pushMatrix();
 		this.scene.translate(0,0.02,-0.1);
-		this.scene.scale(1,0.08,0.23);
+		this.scene.scale(2.34,0.08,0.23);
 		this.traphor.display();
 	this.scene.popMatrix();
+this.scene.popMatrix();
+	
 
-	this.scene.popMatrix();
 
 	//mid trapeze
 	this.scene.pushMatrix();
-		this.scene.translate(-0,9,11);
+		this.scene.translate(0,0.8,2.5);
+		this.scene.scale(1.42,0.04,0.23);
 		this.scene.rotate(Math.PI,0,1,0);
 		this.trapmid.display();
 	this.scene.popMatrix();
 
-// Torpedo
-	/*if(this.showTorpedo==1){
-	this.scene.pushMatrix();
-	this.scene.translate(7.5, 1, 8);
-	this.torpedo.display();
-	this.scene.popMatrix();
-	}*/
 
-	
 
 	this.scene.popMatrix();
 
 	for(i=0; i<this.torpedos.length; i++){
-this.scene.pushMatrix();
-this.scene.translate(7.5, 1, 8);
-	this.torpedos[i].display();
-	this.torpedos[i].update();
-	this.scene.popMatrix();	
-}
+		this.scene.pushMatrix();
+			this.torpedos[i].display();
+		this.scene.popMatrix();	
+	}
 
-
-	//TRIANGLE
-	/*this.scene.pushMatrix();
-
-	this.scene.translate(this.x,this.y,this.z);
-	this.scene.rotate(this.ang*this.deg2rad,0,1,0); 
-
-	this.tri.display();			
-	this.scene.popMatrix();*/
 
 };
 
 
 MySubmarine.prototype.changePredicate = function (x){
 
-this.predicate = x;
+	this.predicate = x;
 
 }
 
 
 MySubmarine.prototype.update = function (currTime) {
 
-/*var elapsed = 0;
-
-if(elapsed!=-1)
-elapsed=(currTime-this.startTime)/1000;*/
 
 var elapsed = (currTime-this.startTime)/1000;
 
@@ -258,12 +228,15 @@ this.startTime = currTime;
 
 if(this.predicate=='w'){
 	this.speed = this.speed + 0.5;
-	
+		if(this.speed > 20)
+			this.speed = 20;	
 	
 }
 	else
 	if(this.predicate=='s'){
 		this.speed = this.speed - 0.5;
+		if(this.speed < -20)
+			this.speed = -20;
 	
 	}
 	else
@@ -284,13 +257,13 @@ if(this.predicate=='d'){
 
 else
 if(this.predicate=='q'){
-	this.y = this.y + 0.1;
+	this.ang_up = this.ang_up - (this.speed*elapsed)*2;
 	this.leme_ang_horizontal = -45;
 }
 
 else
 if(this.predicate=='e'){
-	this.y = this.y - 0.1;
+	this.ang_up = this.ang_up + (this.speed*elapsed)*2;
 	this.leme_ang_horizontal = 45;
 }
 	else
@@ -309,43 +282,41 @@ if(this.predicate=='l'){
 else
 if(this.predicate=='f'){
 
-var torp = new MyTorpedo(this.scene,-7.5,-2,-6,this.ang)
-
-for(i = 0; i < this.targets.length; i++){
-		if(this.targets[i].destroyed==0){
-			torp.lock_target(this.targets[i]);		
+	for(i = 0; i < this.scene.target.length; i++){
+		if(this.scene.target[i].locked==0){
+			var torp = new MyTorpedo(this.scene, this, this.scene.target[i]);
+			this.torpedos.push(torp);
+			this.scene.target[i].locked=1;
 			break;
+		}
 	}
-}
-
-
-this.torpedos.push(torp);
 
 }
 
-/*if(this.predicate=='f'){
-	this.showTorpedo=1;
-	for(i = 0; i < this.targets.length; i++){
-		if(this.targets[i].destroyed==0){
-			this.torpedo.lock_target(this.targets[i]);		
-			break;
+	for(i = 0; i < this.torpedos.length; i++){
+		if(this.torpedos[i].t >= 1){
+			var j=this.scene.target.indexOf(this.torpedos[i].target);
+			this.scene.target[j].destroyed=1;
+			
+			this.torpedos[i].target = null;	
+			this.torpedos.splice(i,1);
+			i--;
+
+		}
+		else
+			this.torpedos[i].update(elapsed);
 	}
-	}
-	
-}*/
+
 
 
 		
 this.z = this.z +  (this.speed*elapsed)*Math.cos(this.ang*this.deg2rad);
 this.x = this.x + (this.speed*elapsed)*Math.sin(this.ang*this.deg2rad);
+this.y = this.y - (this.speed*elapsed)*Math.sin(this.ang_up*this.deg2rad);
+
+this.helix_ang += elapsed* this.speed * Math.PI * 2;
 
 
-
-this.helix_ang += elapsed* this.speed * Math.PI * 2;//%360;  //????  Corrigir isto, os angulos sao mts e nao se mantem mesmo
-
-
-//console.log("Angle: ", this.helix_ang);
-//console.log("Speed: ", this.speed);
 
 
 

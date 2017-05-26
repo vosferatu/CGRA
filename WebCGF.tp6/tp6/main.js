@@ -24,7 +24,6 @@ serialInclude([
 	'MyTopCylinder.js',
 	'MyTopLamp.js',
 	'MyTrapeze.js',
-	'MyLeme.js',
 	'MyTarget.js',
 	'MyTorpedo.js',
 	

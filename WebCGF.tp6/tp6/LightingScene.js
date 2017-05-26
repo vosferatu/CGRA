@@ -50,23 +50,18 @@ this.submarineAppearanceList={ 'subAppearance':0, 'slidesAppearance':1, 'windowA
 	
 	this.wall = new MyQuad(this, -0.5, 1.5, -0.5, 1.5);
 	this.floor = new Plane(this);
-	//this.floor = new MyQuad(this, 0, 10, 0, 12);
 	this.chair = new MyChair(this);
 	this.column = new MyColumn(this);
 	this.clock = new MyClock(this);
 	this.target = new Array;
-	this.torpedo = new MyTorpedo(this);
 	
-	//this.trapeze = new MyTrapeze(this);
-
-	//this.leme=new MyLeme(this);
-
-	//this.trap=new MyTrap(this);
 
 var init_pos_x = 10;
 var init_pos_y = 0.5;
-var init_pos_z = 10;
-	for(i = 0; i < 3; i++){
+var init_pos_z = 1;
+
+var maxTarg=Math.floor(Math.random() * 10) + 2;
+	for(i = 0; i < maxTarg ; i++){
 		this.target.push(new MyTarget(this,init_pos_x,init_pos_y,init_pos_z));
 
 		init_pos_x-=3;
@@ -81,7 +76,7 @@ this.submarineAppearances = [
         ];
 
 
-	this.submarine= new MySubmarine(this,this.target);
+	this.submarine= new MySubmarine(this);
 	
 
 	this.w=0;
@@ -156,7 +151,7 @@ this.submarineAppearances = [
         ];
 
 
-	this.setUpdatePeriod(25);
+	this.setUpdatePeriod(20);
 	
 };
 
@@ -293,17 +288,18 @@ LightingScene.prototype.display = function() {
 	
 
 //Target
-for(i=0; i<3; i++){
+for(i=0; i<this.target.length; i++){
 this.pushMatrix();
-	//this.translate(8,5,-0.77);
+if(this.target[i].over==0)
 	this.target[i].display();
-	this.popMatrix();	
+
+else{
+	this.target.splice(i,1);  
+	i--;
 }
 
-/*this.pushMatrix();
-	//this.translate(8,5,-0.77);
-	this.target.display();
-	this.popMatrix();*/
+	this.popMatrix();	
+}
 
 
 	//clock
@@ -318,13 +314,13 @@ this.pushMatrix();
 		this.scale(2,1.7,0.4);
 		this.column.display();
 	this.popMatrix();
+	
 
 
 	// Floor
 	this.pushMatrix();
 		this.translate(7.5, 0, 7.5);
 		this.rotate(-90 * degToRad, 1, 0, 0);
-		//this.scale(15, 15, 0.2);
 		this.scale(200, 200, 5);
 		this.floorAppearance.apply();
 		this.floor.display();
@@ -339,31 +335,6 @@ this.pushMatrix();
 	this.popMatrix();
 
 
-// Torpedo
-	this.pushMatrix();
-	//this.translate(7.5, 1, 8);
-		//this.torpedoAppearance.apply();
-		//this.torpedo.display();
-	this.popMatrix();
-/*
-	//trapeze
-	this.pushMatrix();
-	this.translate(0,5,0);
-	//this.trapeze.display();
-	this.popMatrix();
-
-	//trapeze
-	this.pushMatrix();
-	this.translate(0,2,0);
-	//this.leme.display();
-	this.popMatrix();
-
-	//trapeze
-	this.pushMatrix();
-	this.translate(0,2,2);
-	//this.trap.display();
-	this.popMatrix();
-*/
 
 
 	// ---- END Primitive drawing section
@@ -385,10 +356,3 @@ LightingScene.prototype.doSomething = function (){
    };
 
 
-/*LightingScene.prototype.submarineMovement = function (x, currTime){ 
-   	
-	this.submarine.update(x,currTime);
-
-	
-
-   };*/
